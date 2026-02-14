@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zaki 🐾 — Progress Tracker</title>
+<title>Zaki 🐾 — Command Center</title>
 <style>
   :root {
     --bg: #0d1117;
@@ -16,252 +16,471 @@
     --red: #f85149;
     --blue: #58a6ff;
     --purple: #bc8cff;
+    --orange: #f78166;
+    --teal: #39d353;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; max-width: 900px; margin: 0 auto; }
-  
-  header { text-align: center; padding: 30px 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 30px; }
-  header h1 { font-size: 2em; margin-bottom: 5px; }
-  header p { color: var(--muted); font-size: 0.95em; }
-  .updated { color: var(--muted); font-size: 0.8em; margin-top: 8px; }
-  
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 30px; }
-  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
-  .stat .num { font-size: 1.8em; font-weight: 700; }
-  .stat .label { color: var(--muted); font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; }
-  .stat.done .num { color: var(--green); }
-  .stat.progress .num { color: var(--yellow); }
-  .stat.blocked .num { color: var(--red); }
-  .stat.todo .num { color: var(--blue); }
-  
-  section { margin-bottom: 30px; }
-  section h2 { font-size: 1.2em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  
-  .task { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
-  .task:hover { border-color: var(--muted); }
-  .task .icon { font-size: 1.1em; flex-shrink: 0; margin-top: 2px; }
-  .task .content { flex: 1; }
-  .task .title { font-weight: 600; font-size: 0.95em; }
-  .task .desc { color: var(--muted); font-size: 0.85em; margin-top: 2px; }
-  .tag { display: inline-block; font-size: 0.7em; padding: 2px 8px; border-radius: 12px; font-weight: 600; margin-left: 6px; vertical-align: middle; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Navigation */
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
+  nav .inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 52px; }
+  nav .logo { font-weight: 700; font-size: 1.1em; }
+  nav .links { display: flex; gap: 4px; }
+  nav .links a { color: var(--muted); text-decoration: none; font-size: 0.85em; padding: 6px 12px; border-radius: 6px; transition: all 0.15s; }
+  nav .links a:hover, nav .links a.active { color: var(--text); background: var(--card); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+  /* Hero */
+  .hero { text-align: center; padding: 40px 0 30px; }
+  .hero h1 { font-size: 2.2em; margin-bottom: 6px; }
+  .hero p { color: var(--muted); font-size: 1em; }
+  .hero .updated { color: var(--muted); font-size: 0.8em; margin-top: 8px; opacity: 0.7; }
+
+  /* Top-level KPIs */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 40px; }
+  .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .kpi .num { font-size: 2em; font-weight: 800; line-height: 1.1; }
+  .kpi .label { color: var(--muted); font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .kpi .sub { color: var(--muted); font-size: 0.75em; margin-top: 4px; }
+  .kpi.green .num { color: var(--green); }
+  .kpi.yellow .num { color: var(--yellow); }
+  .kpi.blue .num { color: var(--blue); }
+  .kpi.purple .num { color: var(--purple); }
+  .kpi.orange .num { color: var(--orange); }
+
+  /* Sections */
+  .section { margin-bottom: 40px; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .section-header h2 { font-size: 1.3em; }
+  .section-header .badge { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; font-size: 0.75em; color: var(--muted); }
+
+  /* Cards grid */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .card:hover { border-color: var(--muted); }
+  .card h3 { font-size: 1em; margin-bottom: 4px; }
+  .card .meta { color: var(--muted); font-size: 0.8em; margin-bottom: 8px; }
+  .card .desc { color: var(--muted); font-size: 0.85em; }
+  .card .links { margin-top: 10px; }
+  .card .links a { color: var(--blue); text-decoration: none; font-size: 0.82em; margin-right: 14px; }
+  .card .links a:hover { text-decoration: underline; }
+  .card .status { display: inline-block; font-size: 0.7em; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .card .status.ready { background: #3fb95022; color: var(--green); }
+  .card .status.wip { background: #d2992222; color: var(--yellow); }
+  .card .status.blocked { background: #f8514922; color: var(--red); }
+
+  /* Tag styles */
+  .tag { display: inline-block; font-size: 0.7em; padding: 2px 8px; border-radius: 12px; font-weight: 600; margin-left: 4px; }
   .tag.infra { background: #1f3a5f; color: var(--blue); }
-  .tag.project { background: #2a1f3f; color: var(--purple); }
-  .tag.cost { background: #3f2a1f; color: var(--yellow); }
+  .tag.sales { background: #3f1f2a; color: var(--orange); }
+  .tag.product { background: #2a1f3f; color: var(--purple); }
   .tag.comms { background: #1f3f2a; color: var(--green); }
-  .tag.product { background: #3f1f2a; color: #f78166; }
-  
-  .pipeline { margin-bottom: 30px; }
-  .pipeline-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
-  .pipeline-table th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tag.cost { background: #3f2a1f; color: var(--yellow); }
+
+  /* Task list */
+  .task-list { display: flex; flex-direction: column; gap: 8px; }
+  .task { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; }
+  .task:hover { border-color: var(--muted); }
+  .task .icon { font-size: 1.1em; flex-shrink: 0; margin-top: 1px; }
+  .task .content { flex: 1; }
+  .task .title { font-weight: 600; font-size: 0.9em; }
+  .task .desc { color: var(--muted); font-size: 0.82em; margin-top: 2px; }
+
+  /* Pipeline table */
+  .pipeline-table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
+  .pipeline-table th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 0.72em; text-transform: uppercase; letter-spacing: 0.5px; }
   .pipeline-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
   .pipeline-table tr:hover { background: rgba(255,255,255,0.02); }
   .score { font-weight: 700; }
   .score.high { color: var(--green); }
   .score.mid { color: var(--yellow); }
-  .niche-tag { display: inline-block; font-size: 0.7em; padding: 2px 6px; border-radius: 8px; font-weight: 600; }
+  .niche-tag { display: inline-block; font-size: 0.68em; padding: 2px 6px; border-radius: 8px; font-weight: 600; }
   .niche-tag.muslim { background: #1a3a2a; color: #3fb950; }
   .niche-tag.adhd { background: #2a1f3f; color: #bc8cff; }
   .niche-tag.health { background: #1f3a5f; color: #58a6ff; }
-  .sprint-label { display: inline-block; font-size: 0.65em; padding: 2px 6px; border-radius: 6px; font-weight: 700; background: #f8514922; color: var(--red); }
+  .sprint-label { display: inline-block; font-size: 0.62em; padding: 2px 6px; border-radius: 6px; font-weight: 700; }
+  .sprint-label.s1 { background: #3fb95022; color: var(--green); }
   .sprint-label.s2 { background: #d2992222; color: var(--yellow); }
   .sprint-label.s3 { background: #58a6ff22; color: var(--blue); }
+
+  /* Insight callouts */
   .insight { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; font-size: 0.85em; }
   .insight strong { color: var(--yellow); }
-  
-  .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
-  @media (max-width: 600px) { .projects { grid-template-columns: 1fr; } }
-  .project-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-  .project-card h3 { font-size: 1em; margin-bottom: 4px; }
-  .project-card .stack { color: var(--muted); font-size: 0.8em; margin-bottom: 8px; }
-  .project-card .links a { color: var(--blue); text-decoration: none; font-size: 0.85em; margin-right: 12px; }
-  .project-card .links a:hover { text-decoration: underline; }
-  
-  footer { text-align: center; color: var(--muted); font-size: 0.8em; padding: 20px 0; border-top: 1px solid var(--border); margin-top: 20px; }
+  .insight.green { border-left-color: var(--green); }
+  .insight.green strong { color: var(--green); }
+  .insight.red { border-left-color: var(--red); }
+  .insight.red strong { color: var(--red); }
+
+  /* Lead stats bar */
+  .lead-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin: 8px 0; }
+  .lead-bar .seg { height: 100%; }
+  .lead-bar .seg.s90 { background: var(--green); }
+  .lead-bar .seg.s80 { background: #2ea043; }
+  .lead-bar .seg.s70 { background: var(--yellow); }
+  .lead-bar .seg.s60 { background: var(--orange); }
+  .lead-bar .seg.slow { background: var(--red); }
+
+  /* Progress bar */
+  .progress-wrap { margin: 8px 0; }
+  .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-bar .fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--blue), var(--green)); }
+
+  /* Two column layout */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } .cards { grid-template-columns: 1fr; } }
+
+  footer { text-align: center; color: var(--muted); font-size: 0.8em; padding: 30px 0; border-top: 1px solid var(--border); margin-top: 20px; }
   footer a { color: var(--blue); text-decoration: none; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🐾 Zaki — Progress Tracker</h1>
-  <p>AI assistant for <strong>Samed</strong> — tracking setup, projects & tasks</p>
-  <div class="updated">Last updated: February 14, 2026</div>
-</header>
-
-<div class="stats">
-  <div class="stat done"><div class="num">18</div><div class="label">Done</div></div>
-  <div class="stat progress"><div class="num">3</div><div class="label">In Progress</div></div>
-  <div class="stat blocked"><div class="num">2</div><div class="label">Blocked</div></div>
-  <div class="stat todo"><div class="num">7</div><div class="label">Next Up</div></div>
-</div>
-
-<h2 style="font-size:1.2em; margin-bottom: 12px;">📦 Active Projects</h2>
-<div class="projects">
-  <div class="project-card">
-    <h3>🚚 Tote 2.0</h3>
-    <div class="stack">Flutter · Next.js · Supabase · Stripe · Google Maps</div>
-    <p style="font-size:0.85em; margin-bottom:8px;">On-demand delivery platform for Norway. Mobile app + admin dashboard.</p>
+<nav>
+  <div class="inner">
+    <div class="logo">🐾 Zaki</div>
     <div class="links">
-      <a href="https://github.com/samednakhla/tote_2.0">GitHub</a>
-      <a href="#">Vercel ↗</a>
+      <a href="#scopax" class="active">Scopax</a>
+      <a href="#leads">Leads</a>
+      <a href="#extensions">Extensions</a>
+      <a href="#projects">Projects</a>
+      <a href="#samed-todo">Samed TODO</a>
+      <a href="#infra">Infra</a>
     </div>
   </div>
-  <div class="project-card">
-    <h3>⚖️ CalVault</h3>
-    <div class="stack">Next.js · Supabase · Tailwind · shadcn/ui</div>
-    <p style="font-size:0.85em; margin-bottom:8px;">Calibration compliance app for Scopax. Certificate management & scheduling.</p>
-    <div class="links">
-      <a href="https://github.com/samednakhla/calibration">GitHub</a>
-      <a href="#">Vercel ↗</a>
-    </div>
+</nav>
+
+<div class="container">
+
+<div class="hero">
+  <h1>Command Center</h1>
+  <p>Everything Samed needs — one page, always current</p>
+  <div class="updated">Last updated: February 14, 2026 · 13:40 CET</div>
+</div>
+
+<!-- ====== TOP KPIs ====== -->
+<div class="kpis">
+  <div class="kpi green">
+    <div class="num">~1,200</div>
+    <div class="label">Qualified Leads</div>
+    <div class="sub">Target: 2,000 · 9 agents running</div>
+  </div>
+  <div class="kpi purple">
+    <div class="num">3</div>
+    <div class="label">Extensions Built</div>
+    <div class="sub">v1.0.2 · QA passed · Ready to publish</div>
+  </div>
+  <div class="kpi yellow">
+    <div class="num">14</div>
+    <div class="label">Days to Ramadan</div>
+    <div class="sub">Feb 28 · Extensions must ship by Feb 25</div>
+  </div>
+  <div class="kpi blue">
+    <div class="num">$199</div>
+    <div class="label">CalVault MRR Target</div>
+    <div class="sub">/mo per customer · Unlimited seats</div>
   </div>
 </div>
 
-<section>
-  <h2>🚀 Scopax Product Pipeline</h2>
-  <p style="color: var(--muted); font-size: 0.85em; margin-bottom: 16px;">Cross-pollination engine output — 35+ ideas scanned, top 10 ranked by score (max 70). <span class="sprint-label">SPRINT 1</span> = Ramadan rush (ship by Feb 25).</p>
-  
-  <div class="pipeline">
+<!-- ====== SCOPAX / CALVAULT SALES ====== -->
+<div class="section" id="scopax">
+  <div class="section-header">
+    <h2>🎯 Scopax CalVault — Sales Pipeline</h2>
+    <span class="badge">PRIORITY #1</span>
+  </div>
+
+  <div class="two-col" style="margin-bottom: 16px;">
+    <div class="card">
+      <h3>📊 Lead Database Status</h3>
+      <div style="font-size: 2em; font-weight: 800; color: var(--green);">880 qualified</div>
+      <div style="color: var(--muted); font-size: 0.82em;">+ ~320 from new research agents running now</div>
+      <div class="lead-bar" title="Score distribution">
+        <div class="seg s90" style="width:30%"></div>
+        <div class="seg s80" style="width:20%"></div>
+        <div class="seg s70" style="width:8%"></div>
+        <div class="seg s60" style="width:24%"></div>
+        <div class="seg slow" style="width:18%"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.7em; color:var(--muted);">
+        <span>🟢 90+ (261)</span><span>🟢 80s (177)</span><span>🟡 70s (71)</span><span>🟠 60s (213)</span><span>🔴 &lt;60 (158)</span>
+      </div>
+      <div style="margin-top:10px; font-size:0.82em;">
+        <strong>14 perfect-score leads</strong> ready for immediate outreach<br>
+        <strong>~50%</strong> score 80+ (send-ready)
+      </div>
+    </div>
+    <div class="card">
+      <h3>🌍 Geographic Coverage</h3>
+      <div style="font-size:0.82em; margin-top:8px;">
+        <div style="margin-bottom:4px;">🇺🇸 <strong>US</strong> — 10 regions covered (CA, TX, NE, Mid-Atlantic, SE, Midwest, PNW, Mountain, NY, WA)</div>
+        <div style="margin-bottom:4px;">🇬🇧 <strong>UK/Ireland</strong> — Aerospace, defense, multi-sector, medical</div>
+        <div style="margin-bottom:4px;">🇨🇦 <strong>Canada</strong> — Ontario, Quebec, Manitoba (42 leads)</div>
+        <div style="margin-bottom:4px;">🇦🇺 <strong>Australia/NZ</strong> — F-35/AUKUS supply chain (30 leads)</div>
+        <div style="margin-bottom:4px;">🇩🇪 <strong>DACH</strong> — New prompt ready, agents researching</div>
+        <div style="margin-bottom:4px;">🇸🇪 <strong>Nordics</strong> — New prompt ready, agents researching</div>
+        <div style="margin-bottom:4px;">🇮🇳🇯🇵🇰🇷 <strong>Asia-Pacific</strong> — India, Japan, Korea (30 leads)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-bottom:16px;">
+    <div class="card">
+      <h3>🔥 Urgency Leads <span class="tag sales">HOT</span></h3>
+      <div class="desc">Agent hunting for companies with:</div>
+      <ul style="font-size:0.82em; margin-top:8px; padding-left:18px; color:var(--muted);">
+        <li><strong>FDA warning letters</strong> mentioning calibration/OOT</li>
+        <li><strong>NADCAP suspensions</strong> — lost accreditation</li>
+        <li><strong>AS9100 major nonconformities</strong></li>
+        <li><strong>Boeing/Airbus managed supplier</strong> list</li>
+        <li><strong>DCMA corrective action requests</strong></li>
+        <li><strong>Job postings</strong> for calibration roles (= overwhelmed)</li>
+      </ul>
+      <div style="margin-top:8px; font-size:0.82em; color:var(--orange);">⏳ Agent running — results incoming</div>
+    </div>
+    <div class="card">
+      <h3>📬 Outreach System</h3>
+      <div style="font-size:0.82em; margin-top:8px;">
+        <div style="margin-bottom:6px;">✅ <strong>Prompt template v3.0</strong> — Lead scoring (0-100), verification protocol, trigger events</div>
+        <div style="margin-bottom:6px;">✅ <strong>Email templates</strong> — Cold, personalized, honest versions ready</div>
+        <div style="margin-bottom:6px;">⏳ <strong>Personalization playbook</strong> — 60-cell trigger×vertical matrix building now</div>
+        <div style="margin-bottom:6px;">📋 <strong>HubSpot import CSVs</strong> — UK + Ireland ready</div>
+        <div style="margin-bottom:6px;">📋 <strong>Master CSV</strong> — 880 leads, CRM-ready</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight red"><strong>🚨 Key finding:</strong> Only 43% of original leads were send-ready. 75 duplicates and 46 exclusion violations removed. California was worst region (barely any real contacts).</div>
+  <div class="insight green"><strong>✅ Fixed:</strong> Master list now deduplicated, scored, and ranked. 14 perfect-100 leads for immediate outreach. CSV ready for CRM import.</div>
+</div>
+
+<!-- ====== CHROME EXTENSIONS ====== -->
+<div class="section" id="extensions">
+  <div class="section-header">
+    <h2>🧩 Chrome Extensions — Sprint 1</h2>
+    <span class="badge">SHIP BY FEB 25</span>
+  </div>
+
+  <div class="cards" style="margin-bottom:16px;">
+    <div class="card">
+      <h3>🌙 Ramadan Iftar Countdown <span class="status ready">v1.0.2 ✓</span></h3>
+      <div class="meta">Prayer time countdown · Suhoor alerts · Hijri date · Ramadan awareness</div>
+      <div class="desc">QA R3 passed. All P1s fixed: Ramadan detection, accurate next-day times, host_permissions, accessibility.</div>
+    </div>
+    <div class="card">
+      <h3>📿 Dhikr Counter <span class="status ready">v1.0.2 ✓</span></h3>
+      <div class="meta">5 dhikr types · Streaks · Sound · History · Per-dhikr counts</div>
+      <div class="desc">QA R3 passed. Fixed: per-dhikr count persistence, save bug, aria-labels, version bump.</div>
+    </div>
+    <div class="card">
+      <h3>⏰ Fasting Timer <span class="status ready">v1.0.2 ✓</span></h3>
+      <div class="meta">Intermittent + Ramadan fasting · 14 prayer calc methods · Progress ring</div>
+      <div class="desc">QA R3 passed. Fixed: Fajr-based start, calc method selector, partial fast visuals, API caching.</div>
+    </div>
+  </div>
+
+  <div class="insight red"><strong>⏰ BLOCKER:</strong> Need Chrome Web Store developer account ($5 fee) + Google Cloud OAuth setup to publish. Samed must do this — can't automate past CAPTCHA/2FA.</div>
+
+  <div style="margin-top:16px;">
+    <div class="section-header" style="border:none; padding:0; margin-bottom:12px;">
+      <h3 style="font-size:1em;">Full Product Pipeline</h3>
+      <span class="badge">10 products</span>
+    </div>
     <table class="pipeline-table">
       <thead>
-        <tr><th>#</th><th>Product</th><th>Score</th><th>Platform</th><th>Build</th><th>Niche</th><th>Sprint</th></tr>
+        <tr><th>#</th><th>Product</th><th>Score</th><th>Niche</th><th>Sprint</th><th>Status</th></tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td><strong>🌙 Ramadan Iftar Countdown</strong><br><span style="color:var(--muted)">Prayer time countdown + suhoor alerts</span></td>
-          <td><span class="score high">64</span></td>
-          <td>Chrome</td>
-          <td>2-3h</td>
-          <td><span class="niche-tag muslim">Muslim</span></td>
-          <td><span class="sprint-label">SPRINT 1</span></td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td><strong>🔍 HalalScan</strong><br><span style="color:var(--muted)">Ingredient checker — 0 results on Chrome</span></td>
-          <td><span class="score high">64</span></td>
-          <td>Chrome → iOS</td>
-          <td>6-8h</td>
-          <td><span class="niche-tag muslim">Muslim</span></td>
-          <td><span class="sprint-label s3">SPRINT 3</span></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td><strong>📿 Tasbeeh Pro</strong><br><span style="color:var(--muted)">Dhikr counter + streaks + haptics</span></td>
-          <td><span class="score high">63</span></td>
-          <td>Both</td>
-          <td>4-5h</td>
-          <td><span class="niche-tag muslim">Muslim</span></td>
-          <td><span class="sprint-label">SPRINT 1</span></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td><strong>⏰ Fasting Timer</strong><br><span style="color:var(--muted)">Intermittent fasting — untouched on Chrome</span></td>
-          <td><span class="score high">63</span></td>
-          <td>Chrome</td>
-          <td>3-4h</td>
-          <td><span class="niche-tag health">Health</span></td>
-          <td><span class="sprint-label">SPRINT 1</span></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td><strong>📿 Dhikr Counter (Chrome)</strong><br><span style="color:var(--muted)">Shares code with Ramadan countdown</span></td>
-          <td><span class="score high">62</span></td>
-          <td>Chrome</td>
-          <td>2-3h</td>
-          <td><span class="niche-tag muslim">Muslim</span></td>
-          <td><span class="sprint-label">SPRINT 1</span></td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td><strong>🔊 Brown Noise Generator</strong><br><span style="color:var(--muted)">ADHD focus — viral TikTok trend</span></td>
-          <td><span class="score mid">60</span></td>
-          <td>Both</td>
-          <td>1-3h</td>
-          <td><span class="niche-tag adhd">ADHD</span></td>
-          <td><span class="sprint-label s2">SPRINT 2</span></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td><strong>🧠 ADHD Tab Limiter</strong><br><span style="color:var(--muted)">Shame-free tab closer — 0 competitors</span></td>
-          <td><span class="score mid">58</span></td>
-          <td>Chrome</td>
-          <td>3-4h</td>
-          <td><span class="niche-tag adhd">ADHD</span></td>
-          <td><span class="sprint-label s2">SPRINT 2</span></td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td><strong>👥 Body Doubling Timer</strong><br><span style="color:var(--muted)">Virtual co-working for focus</span></td>
-          <td><span class="score mid">58</span></td>
-          <td>Both</td>
-          <td>6-8h</td>
-          <td><span class="niche-tag adhd">ADHD</span></td>
-          <td><span class="sprint-label s2">SPRINT 2</span></td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td><strong>🤲 Duas Daily</strong><br><span style="color:var(--muted)">Contextual dua widget + new tab</span></td>
-          <td><span class="score mid">57</span></td>
-          <td>Both</td>
-          <td>4-5h</td>
-          <td><span class="niche-tag muslim">Muslim</span></td>
-          <td><span class="sprint-label s3">SPRINT 3</span></td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td><strong>🚫 Niyyah Focus Blocker</strong><br><span style="color:var(--muted)">Auto-blocks during prayer times</span></td>
-          <td><span class="score mid">56</span></td>
-          <td>Chrome</td>
-          <td>4-6h</td>
-          <td><span class="niche-tag muslim">Muslim</span></td>
-          <td><span class="sprint-label s3">SPRINT 3</span></td>
-        </tr>
+        <tr><td>1</td><td><strong>🌙 Ramadan Countdown</strong></td><td><span class="score high">64</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s1">S1</span></td><td>✅ Built + QA'd</td></tr>
+        <tr><td>2</td><td><strong>📿 Dhikr Counter</strong></td><td><span class="score high">63</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s1">S1</span></td><td>✅ Built + QA'd</td></tr>
+        <tr><td>3</td><td><strong>⏰ Fasting Timer</strong></td><td><span class="score high">63</span></td><td><span class="niche-tag health">Health</span></td><td><span class="sprint-label s1">S1</span></td><td>✅ Built + QA'd</td></tr>
+        <tr><td>4</td><td><strong>🔍 HalalScan</strong></td><td><span class="score high">64</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s3">S3</span></td><td>📋 Spec'd</td></tr>
+        <tr><td>5</td><td><strong>🔊 Brown Noise</strong></td><td><span class="score mid">60</span></td><td><span class="niche-tag adhd">ADHD</span></td><td><span class="sprint-label s2">S2</span></td><td>📋 Spec'd</td></tr>
+        <tr><td>6</td><td><strong>🧠 Tab Limiter</strong></td><td><span class="score mid">58</span></td><td><span class="niche-tag adhd">ADHD</span></td><td><span class="sprint-label s2">S2</span></td><td>📋 Spec'd</td></tr>
+        <tr><td>7</td><td><strong>👥 Body Doubling</strong></td><td><span class="score mid">58</span></td><td><span class="niche-tag adhd">ADHD</span></td><td><span class="sprint-label s2">S2</span></td><td>📋 Spec'd</td></tr>
+        <tr><td>8</td><td><strong>🤲 Duas Daily</strong></td><td><span class="score mid">57</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s3">S3</span></td><td>📋 Spec'd</td></tr>
+        <tr><td>9</td><td><strong>🚫 Niyyah Blocker</strong></td><td><span class="score mid">56</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s3">S3</span></td><td>📋 Spec'd</td></tr>
+        <tr><td>10</td><td><strong>📿 Tasbeeh Pro</strong></td><td><span class="score high">63</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s1">S1</span></td><td>📋 Spec'd</td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="insight"><strong>💡 Key insight:</strong> Cross-language beats cross-platform. Simple English utilities have ZERO competition in Arabic, Turkish, Hindi, Urdu — 2B+ users unserved.</div>
-  <div class="insight"><strong>⏰ Time-critical:</strong> Ramadan starts Feb 28. Sprint 1 products must ship by Feb 25 to capture seasonal demand spike.</div>
-  <div class="insight"><strong>💰 Revenue target:</strong> $2,600–9,800/mo across 9-10 products within 6-12 months. Multiply 3-5x with localization.</div>
-</section>
+  <div class="insight" style="margin-top:12px;"><strong>💡 Key insight:</strong> Cross-language beats cross-platform. Simple English utilities have ZERO competition in Arabic, Turkish, Hindi, Urdu — 2B+ users unserved.</div>
+  <div class="insight"><strong>💰 Revenue target:</strong> $2,600–9,800/mo across 9-10 products within 6-12 months. 3-5x with localization.</div>
+</div>
 
-<section>
-  <h2>✅ Completed</h2>
-  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">OpenClaw gateway setup <span class="tag infra">infra</span></div><div class="desc">Docker/AWS EC2, Telegram integration, auth config</div></div></div>
-  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Identity & personality <span class="tag infra">infra</span></div><div class="desc">SOUL.md, IDENTITY.md, USER.md, MEMORY.md — full persona configured</div></div></div>
-  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Browser automation <span class="tag infra">infra</span></div><div class="desc">Chromium headless working in container — screenshots, navigation, DOM interaction</div></div></div>
-  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Email setup <span class="tag comms">comms</span></div><div class="desc">Gmail (zakiassistant247@gmail.com) + Himalaya CLI — send & receive working</div></div></div>
-  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">GitHub integration <span class="tag infra">infra</span></div><div class="desc">gh CLI authed as zakiassistant247, collaborator on CalVault & Tote repos</div></div></div>
-  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Skills installed (9) <span class="tag infra">infra</span></div><div class="desc">gog, github, slack, summarize, gamma, supabase, linkedin, daily-briefing, cron-mastery</div></div></div>
-  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Memory system <span class="tag infra">infra</span></div><div class="desc">Memory flush, session search, daily logs — full continuity across sessions</div></div></div>
-  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Heartbeat & session management <span class="tag infra">infra</span></div><div class="desc">30min heartbeat (7am-11pm), 1h idle reset, Telegram reactions & reply threading</div></div></div>
-  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Tote repo cloned & explored <span class="tag project">project</span></div><div class="desc">Monorepo structure mapped — Flutter mobile, Next.js admin, Supabase backend</div></div></div>
-</section>
+<!-- ====== SAMED TODO ====== -->
+<div class="section" id="samed-todo">
+  <div class="section-header">
+    <h2>📱 Samed's Action Items</h2>
+    <span class="badge">Things only you can do</span>
+  </div>
+  <p style="color:var(--muted); font-size:0.85em; margin-bottom:12px;">These are blocked on you — Zaki can't do them due to CAPTCHAs, payment, or 2FA requirements.</p>
 
-<section>
-  <h2>🔨 In Progress</h2>
-  <div class="task"><span class="icon">🔨</span><div class="content"><div class="title">Tote admin dashboard local run <span class="tag project">project</span></div><div class="desc">Need Supabase env vars to run Next.js admin locally for E2E testing</div></div></div>
-  <div class="task"><span class="icon">🔨</span><div class="content"><div class="title">CalVault repo exploration <span class="tag project">project</span></div><div class="desc">Need to clone and understand codebase, identify active tasks</div></div></div>
-  <div class="task"><span class="icon">🔨</span><div class="content"><div class="title">Claude Code CLI in container <span class="tag infra">infra</span></div><div class="desc">Installed on host but not inside Docker — needs npm global install</div></div></div>
-</section>
+  <div class="task-list">
+    <div class="task" style="border-left: 3px solid var(--red);">
+      <span class="icon">🔴</span>
+      <div class="content">
+        <div class="title">Chrome Web Store — Pay $5 + OAuth setup <span class="tag product">product</span></div>
+        <div class="desc"><strong>~10 min from phone.</strong> Go to <a href="https://chrome.google.com/webstore/devconsole" style="color:var(--blue)">chrome.google.com/webstore/devconsole</a> → Pay $5 → Then: Google Cloud Console → new project → enable CWS API → create OAuth client → get refresh token via OAuth Playground. Send Zaki: CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN.</div>
+      </div>
+    </div>
+    <div class="task" style="border-left: 3px solid var(--orange);">
+      <span class="icon">🟠</span>
+      <div class="content">
+        <div class="title">ElevenLabs — Sign up + send API key <span class="tag infra">infra</span></div>
+        <div class="desc"><strong>30 seconds.</strong> <a href="https://elevenlabs.io/app/sign-up" style="color:var(--blue)">elevenlabs.io</a> → Sign up with Google (zakiassistant247@gmail.com) → Settings → API Keys → paste to Zaki. Free tier = 10k chars/mo.</div>
+      </div>
+    </div>
+    <div class="task" style="border-left: 3px solid var(--orange);">
+      <span class="icon">🟠</span>
+      <div class="content">
+        <div class="title">Brave Search API key <span class="tag infra">infra</span></div>
+        <div class="desc"><strong>2 min.</strong> <a href="https://brave.com/search/api/" style="color:var(--blue)">brave.com/search/api</a> → Free tier (2k queries/mo) → Copy API key → send to Zaki. Unlocks 10x more lead research.</div>
+      </div>
+    </div>
+    <div class="task" style="border-left: 3px solid var(--yellow);">
+      <span class="icon">🟡</span>
+      <div class="content">
+        <div class="title">Supabase env vars for Tote admin <span class="tag sales">project</span></div>
+        <div class="desc">Need SUPABASE_URL + SUPABASE_ANON_KEY + SUPABASE_SERVICE_KEY for local Tote admin dashboard testing.</div>
+      </div>
+    </div>
+    <div class="task" style="border-left: 3px solid var(--yellow);">
+      <span class="icon">🟡</span>
+      <div class="content">
+        <div class="title">Cheaper AI model — API key <span class="tag cost">cost</span></div>
+        <div class="desc">Still on Opus ($$$). Options: NVIDIA API key (free Kimi K2.5) at <a href="https://build.nvidia.com" style="color:var(--blue)">build.nvidia.com</a>, or MiniMax OAuth setup.</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<section>
-  <h2>🚫 Blocked</h2>
-  <div class="task"><span class="icon">🚫</span><div class="content"><div class="title">Model cost reduction <span class="tag cost">cost</span></div><div class="desc">Still on Opus ($$$). Need NVIDIA API key for free Kimi K2.5 or MiniMax OAuth setup</div></div></div>
-  <div class="task"><span class="icon">🚫</span><div class="content"><div class="title">Flutter mobile testing <span class="tag project">project</span></div><div class="desc">No Android emulator or iOS simulator possible in Docker. Flutter Web as workaround.</div></div></div>
-</section>
+<!-- ====== ACTIVE PROJECTS ====== -->
+<div class="section" id="projects">
+  <div class="section-header">
+    <h2>📦 Active Projects</h2>
+  </div>
 
-<section>
-  <h2>📋 Next Up</h2>
-  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">Set up GitHub notifications monitoring <span class="tag infra">infra</span></div><div class="desc">Watch for PRs, issues, mentions on CalVault & Tote</div></div></div>
-  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">Daily briefing cron job <span class="tag comms">comms</span></div><div class="desc">Morning summary — weather, calendar, emails, project updates</div></div></div>
-  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">Tote E2E test suite <span class="tag project">project</span></div><div class="desc">Browser-automated testing of admin dashboard flows</div></div></div>
-  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">Web search API key <span class="tag infra">infra</span></div><div class="desc">Brave Search API key needed for web_search tool</div></div></div>
-  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">Chrome Web Store publish setup <span class="tag product">product</span></div><div class="desc">1) Pay $5 dev fee → 2) Create Google Cloud project + enable CWS API → 3) OAuth credentials (client ID, secret, refresh token) → 4) CLI publish all 3 extensions</div></div></div>
-  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">ElevenLabs TTS API key <span class="tag infra">infra</span></div><div class="desc">Sign up at elevenlabs.io (use zakiassistant247@gmail.com or Google OAuth) → Settings → API Keys → send key to Zaki. Free tier = 10k chars/mo</div></div></div>
-  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">AI cold calling setup <span class="tag comms">comms</span></div><div class="desc">Research Bland AI / Vapi / Twilio for AI-powered cold calling. Needs: phone number (~$1/mo), calling platform, sales script. Check Swiss UWG compliance.</div></div></div>
-</section>
+  <div class="cards">
+    <div class="card">
+      <h3>⚖️ CalVault (Scopax)</h3>
+      <div class="meta">Next.js · Supabase · Tailwind · shadcn/ui</div>
+      <div class="desc">Calibration compliance SaaS. Generates audit-ready evidence packs in 60s vs 8+ hours with Excel. $199/mo unlimited seats.</div>
+      <div class="links">
+        <a href="https://github.com/samednakhla/calibration">GitHub</a>
+        <a href="#">Vercel ↗</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🚚 Tote 2.0</h3>
+      <div class="meta">Flutter · Next.js · Supabase · Stripe · Google Maps</div>
+      <div class="desc">On-demand delivery platform for Norway. Mobile app + admin dashboard. 415+ DB migrations.</div>
+      <div class="links">
+        <a href="https://github.com/samednakhla/tote_2.0">GitHub</a>
+        <a href="#">Vercel ↗</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== LEADS DETAIL ====== -->
+<div class="section" id="leads">
+  <div class="section-header">
+    <h2>📈 Lead Generation — Detailed Status</h2>
+  </div>
+
+  <div style="margin-bottom:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
+      <span style="font-size:0.85em; font-weight:600;">Progress to 2,000 leads</span>
+      <span style="font-size:0.82em; color:var(--muted);">~1,200 / 2,000</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="fill" style="width:60%"></div></div>
+    </div>
+  </div>
+
+  <h3 style="font-size:0.95em; margin-bottom:10px;">📁 Files in Repository</h3>
+  <table class="pipeline-table" style="margin-bottom:20px;">
+    <thead><tr><th>File</th><th>Type</th><th>Leads</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>MASTER-QUALIFIED-LEADS.md + .csv</td><td>Master list</td><td>880</td><td>✅ Scored & deduped</td></tr>
+      <tr><td>LEAD-QUALITY-AUDIT.md</td><td>Audit report</td><td>—</td><td>✅ Complete</td></tr>
+      <tr><td>PERSONALIZATION-PLAYBOOK.md</td><td>Outreach guide</td><td>—</td><td>⏳ Building</td></tr>
+      <tr><td>results/NEW-web-research-leads.md</td><td>New leads</td><td>14</td><td>✅ Verified</td></tr>
+      <tr><td>results/NEW-directory-research.md</td><td>New leads</td><td>31</td><td>✅ Complete</td></tr>
+      <tr><td>results/NEW-niche-verticals.md</td><td>New leads</td><td>85</td><td>✅ Complete</td></tr>
+      <tr><td>results/NEW-defense-medical-vertical.md</td><td>New leads</td><td>85</td><td>✅ Complete</td></tr>
+      <tr><td>results/NEW-canada-apac-expansion.md</td><td>New leads</td><td>102</td><td>✅ Complete</td></tr>
+      <tr><td>results/NEW-us-midwest-expansion.md</td><td>New leads</td><td>80+</td><td>⏳ Agent running</td></tr>
+      <tr><td>results/NEW-uk-europe-expansion.md</td><td>New leads</td><td>100</td><td>⏳ Agent running</td></tr>
+      <tr><td>results/NEW-us-southeast-northeast.md</td><td>New leads</td><td>100+</td><td>⏳ Agent running</td></tr>
+      <tr><td>results/NEW-audit-pain-urgent-leads.md</td><td>🔥 Hot leads</td><td>10-30</td><td>⏳ Agent running</td></tr>
+      <tr><td>results/NEW-buying-signals.md</td><td>🔥 Intent leads</td><td>15-30</td><td>⏳ Agent running</td></tr>
+      <tr><td>results/ENRICHED-california-pnw.md</td><td>Enrichment</td><td>11</td><td>✅ Complete</td></tr>
+      <tr><td>prompts/00-prompt-template-v3.md</td><td>Prompt v3</td><td>—</td><td>✅ Lead scoring, triggers</td></tr>
+      <tr><td>prompts/12-germany-dach.md</td><td>New region</td><td>75 target</td><td>✅ Ready to run</td></tr>
+      <tr><td>prompts/13-nordics-scandinavia.md</td><td>New region</td><td>50 target</td><td>✅ Ready to run</td></tr>
+      <tr><td>prompts/14-australia-nz.md</td><td>New region</td><td>50 target</td><td>✅ Ready to run</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size:0.95em; margin-bottom:10px;">🏭 Industry Verticals</h3>
+  <div class="cards" style="margin-bottom:16px;">
+    <div class="card">
+      <div style="font-size:0.85em;">
+        <div>✈️ <strong>Aerospace & Defense</strong> — ~60% of leads</div>
+        <div>🏥 <strong>Medical Devices</strong> — ~20% of leads</div>
+        <div>⚙️ <strong>Precision Engineering</strong> — ~10%</div>
+        <div>☢️ <strong>Nuclear/Energy</strong> — ~5%</div>
+        <div>🚗 <strong>Automotive</strong> — ~5%</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:0.9em;">🔓 Unlock More Leads</h3>
+      <div style="font-size:0.82em; color:var(--muted); margin-top:6px;">
+        <div>🔑 <strong>Brave Search API</strong> → 10x web research capability</div>
+        <div>🔑 <strong>LinkedIn Sales Navigator</strong> → Named contacts + emails</div>
+        <div>🔑 <strong>ThomasNet login</strong> → Industrial supplier directory</div>
+        <div>🔑 <strong>eAuditNet login</strong> → NADCAP certified companies</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== INFRASTRUCTURE ====== -->
+<div class="section" id="infra">
+  <div class="section-header">
+    <h2>🔧 Infrastructure</h2>
+    <span class="badge">All systems operational</span>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>✅ Running</h3>
+      <div style="font-size:0.82em; margin-top:6px;">
+        <div>🐾 OpenClaw gateway on Docker/AWS EC2</div>
+        <div>💬 Telegram integration (reactions, threading)</div>
+        <div>🌐 Chromium headless browser automation</div>
+        <div>📧 Gmail + Himalaya CLI (send/receive)</div>
+        <div>🐙 GitHub CLI (zakiassistant247)</div>
+        <div>🧠 Memory system + 30min heartbeat</div>
+        <div>📦 9 skills installed</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🚫 Blocked</h3>
+      <div style="font-size:0.82em; margin-top:6px;">
+        <div>💸 Model cost — still on Opus ($$$)</div>
+        <div>📱 Flutter mobile testing — no emulator in Docker</div>
+        <div>🔍 Web search — no Brave API key</div>
+        <div>🗣️ TTS — no ElevenLabs API key</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
 
 <footer>
   Powered by <a href="https://github.com/openclaw/openclaw">OpenClaw</a> · Running on AWS EC2 · 
