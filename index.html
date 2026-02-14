@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaki 🐾 — Progress Tracker</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --card: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --blue: #58a6ff;
+    --purple: #bc8cff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; max-width: 900px; margin: 0 auto; }
+  
+  header { text-align: center; padding: 30px 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 30px; }
+  header h1 { font-size: 2em; margin-bottom: 5px; }
+  header p { color: var(--muted); font-size: 0.95em; }
+  .updated { color: var(--muted); font-size: 0.8em; margin-top: 8px; }
+  
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 30px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .stat .num { font-size: 1.8em; font-weight: 700; }
+  .stat .label { color: var(--muted); font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat.done .num { color: var(--green); }
+  .stat.progress .num { color: var(--yellow); }
+  .stat.blocked .num { color: var(--red); }
+  .stat.todo .num { color: var(--blue); }
+  
+  section { margin-bottom: 30px; }
+  section h2 { font-size: 1.2em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  
+  .task { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
+  .task:hover { border-color: var(--muted); }
+  .task .icon { font-size: 1.1em; flex-shrink: 0; margin-top: 2px; }
+  .task .content { flex: 1; }
+  .task .title { font-weight: 600; font-size: 0.95em; }
+  .task .desc { color: var(--muted); font-size: 0.85em; margin-top: 2px; }
+  .tag { display: inline-block; font-size: 0.7em; padding: 2px 8px; border-radius: 12px; font-weight: 600; margin-left: 6px; vertical-align: middle; }
+  .tag.infra { background: #1f3a5f; color: var(--blue); }
+  .tag.project { background: #2a1f3f; color: var(--purple); }
+  .tag.cost { background: #3f2a1f; color: var(--yellow); }
+  .tag.comms { background: #1f3f2a; color: var(--green); }
+  
+  .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
+  @media (max-width: 600px) { .projects { grid-template-columns: 1fr; } }
+  .project-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .project-card h3 { font-size: 1em; margin-bottom: 4px; }
+  .project-card .stack { color: var(--muted); font-size: 0.8em; margin-bottom: 8px; }
+  .project-card .links a { color: var(--blue); text-decoration: none; font-size: 0.85em; margin-right: 12px; }
+  .project-card .links a:hover { text-decoration: underline; }
+  
+  footer { text-align: center; color: var(--muted); font-size: 0.8em; padding: 20px 0; border-top: 1px solid var(--border); margin-top: 20px; }
+  footer a { color: var(--blue); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🐾 Zaki — Progress Tracker</h1>
+  <p>AI assistant for <strong>Samed</strong> — tracking setup, projects & tasks</p>
+  <div class="updated">Last updated: February 14, 2026</div>
+</header>
+
+<div class="stats">
+  <div class="stat done"><div class="num">18</div><div class="label">Done</div></div>
+  <div class="stat progress"><div class="num">3</div><div class="label">In Progress</div></div>
+  <div class="stat blocked"><div class="num">2</div><div class="label">Blocked</div></div>
+  <div class="stat todo"><div class="num">4</div><div class="label">Next Up</div></div>
+</div>
+
+<h2 style="font-size:1.2em; margin-bottom: 12px;">📦 Active Projects</h2>
+<div class="projects">
+  <div class="project-card">
+    <h3>🚚 Tote 2.0</h3>
+    <div class="stack">Flutter · Next.js · Supabase · Stripe · Google Maps</div>
+    <p style="font-size:0.85em; margin-bottom:8px;">On-demand delivery platform for Norway. Mobile app + admin dashboard.</p>
+    <div class="links">
+      <a href="https://github.com/samednakhla/tote_2.0">GitHub</a>
+      <a href="#">Vercel ↗</a>
+    </div>
+  </div>
+  <div class="project-card">
+    <h3>⚖️ CalVault</h3>
+    <div class="stack">Next.js · Supabase · Tailwind · shadcn/ui</div>
+    <p style="font-size:0.85em; margin-bottom:8px;">Calibration compliance app for Scopax. Certificate management & scheduling.</p>
+    <div class="links">
+      <a href="https://github.com/samednakhla/calibration">GitHub</a>
+      <a href="#">Vercel ↗</a>
+    </div>
+  </div>
+</div>
+
+<section>
+  <h2>✅ Completed</h2>
+  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">OpenClaw gateway setup <span class="tag infra">infra</span></div><div class="desc">Docker/AWS EC2, Telegram integration, auth config</div></div></div>
+  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Identity & personality <span class="tag infra">infra</span></div><div class="desc">SOUL.md, IDENTITY.md, USER.md, MEMORY.md — full persona configured</div></div></div>
+  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Browser automation <span class="tag infra">infra</span></div><div class="desc">Chromium headless working in container — screenshots, navigation, DOM interaction</div></div></div>
+  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Email setup <span class="tag comms">comms</span></div><div class="desc">Gmail (zakiassistant247@gmail.com) + Himalaya CLI — send & receive working</div></div></div>
+  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">GitHub integration <span class="tag infra">infra</span></div><div class="desc">gh CLI authed as zakiassistant247, collaborator on CalVault & Tote repos</div></div></div>
+  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Skills installed (9) <span class="tag infra">infra</span></div><div class="desc">gog, github, slack, summarize, gamma, supabase, linkedin, daily-briefing, cron-mastery</div></div></div>
+  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Memory system <span class="tag infra">infra</span></div><div class="desc">Memory flush, session search, daily logs — full continuity across sessions</div></div></div>
+  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Heartbeat & session management <span class="tag infra">infra</span></div><div class="desc">30min heartbeat (7am-11pm), 1h idle reset, Telegram reactions & reply threading</div></div></div>
+  <div class="task"><span class="icon">✅</span><div class="content"><div class="title">Tote repo cloned & explored <span class="tag project">project</span></div><div class="desc">Monorepo structure mapped — Flutter mobile, Next.js admin, Supabase backend</div></div></div>
+</section>
+
+<section>
+  <h2>🔨 In Progress</h2>
+  <div class="task"><span class="icon">🔨</span><div class="content"><div class="title">Tote admin dashboard local run <span class="tag project">project</span></div><div class="desc">Need Supabase env vars to run Next.js admin locally for E2E testing</div></div></div>
+  <div class="task"><span class="icon">🔨</span><div class="content"><div class="title">CalVault repo exploration <span class="tag project">project</span></div><div class="desc">Need to clone and understand codebase, identify active tasks</div></div></div>
+  <div class="task"><span class="icon">🔨</span><div class="content"><div class="title">Claude Code CLI in container <span class="tag infra">infra</span></div><div class="desc">Installed on host but not inside Docker — needs npm global install</div></div></div>
+</section>
+
+<section>
+  <h2>🚫 Blocked</h2>
+  <div class="task"><span class="icon">🚫</span><div class="content"><div class="title">Model cost reduction <span class="tag cost">cost</span></div><div class="desc">Still on Opus ($$$). Need NVIDIA API key for free Kimi K2.5 or MiniMax OAuth setup</div></div></div>
+  <div class="task"><span class="icon">🚫</span><div class="content"><div class="title">Flutter mobile testing <span class="tag project">project</span></div><div class="desc">No Android emulator or iOS simulator possible in Docker. Flutter Web as workaround.</div></div></div>
+</section>
+
+<section>
+  <h2>📋 Next Up</h2>
+  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">Set up GitHub notifications monitoring <span class="tag infra">infra</span></div><div class="desc">Watch for PRs, issues, mentions on CalVault & Tote</div></div></div>
+  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">Daily briefing cron job <span class="tag comms">comms</span></div><div class="desc">Morning summary — weather, calendar, emails, project updates</div></div></div>
+  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">Tote E2E test suite <span class="tag project">project</span></div><div class="desc">Browser-automated testing of admin dashboard flows</div></div></div>
+  <div class="task"><span class="icon">📋</span><div class="content"><div class="title">Web search API key <span class="tag infra">infra</span></div><div class="desc">Brave Search API key needed for web_search tool</div></div></div>
+</section>
+
+<footer>
+  Powered by <a href="https://github.com/openclaw/openclaw">OpenClaw</a> · Running on AWS EC2 · 
+  <a href="https://github.com/zakiassistant247">@zakiassistant247</a>
+</footer>
+
+</body>
+</html>
