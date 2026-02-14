@@ -48,6 +48,25 @@
   .tag.project { background: #2a1f3f; color: var(--purple); }
   .tag.cost { background: #3f2a1f; color: var(--yellow); }
   .tag.comms { background: #1f3f2a; color: var(--green); }
+  .tag.product { background: #3f1f2a; color: #f78166; }
+  
+  .pipeline { margin-bottom: 30px; }
+  .pipeline-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+  .pipeline-table th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.5px; }
+  .pipeline-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .pipeline-table tr:hover { background: rgba(255,255,255,0.02); }
+  .score { font-weight: 700; }
+  .score.high { color: var(--green); }
+  .score.mid { color: var(--yellow); }
+  .niche-tag { display: inline-block; font-size: 0.7em; padding: 2px 6px; border-radius: 8px; font-weight: 600; }
+  .niche-tag.muslim { background: #1a3a2a; color: #3fb950; }
+  .niche-tag.adhd { background: #2a1f3f; color: #bc8cff; }
+  .niche-tag.health { background: #1f3a5f; color: #58a6ff; }
+  .sprint-label { display: inline-block; font-size: 0.65em; padding: 2px 6px; border-radius: 6px; font-weight: 700; background: #f8514922; color: var(--red); }
+  .sprint-label.s2 { background: #d2992222; color: var(--yellow); }
+  .sprint-label.s3 { background: #58a6ff22; color: var(--blue); }
+  .insight { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; font-size: 0.85em; }
+  .insight strong { color: var(--yellow); }
   
   .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
   @media (max-width: 600px) { .projects { grid-template-columns: 1fr; } }
@@ -97,6 +116,115 @@
     </div>
   </div>
 </div>
+
+<section>
+  <h2>🚀 Scopax Product Pipeline</h2>
+  <p style="color: var(--muted); font-size: 0.85em; margin-bottom: 16px;">Cross-pollination engine output — 35+ ideas scanned, top 10 ranked by score (max 70). <span class="sprint-label">SPRINT 1</span> = Ramadan rush (ship by Feb 25).</p>
+  
+  <div class="pipeline">
+    <table class="pipeline-table">
+      <thead>
+        <tr><th>#</th><th>Product</th><th>Score</th><th>Platform</th><th>Build</th><th>Niche</th><th>Sprint</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>🌙 Ramadan Iftar Countdown</strong><br><span style="color:var(--muted)">Prayer time countdown + suhoor alerts</span></td>
+          <td><span class="score high">64</span></td>
+          <td>Chrome</td>
+          <td>2-3h</td>
+          <td><span class="niche-tag muslim">Muslim</span></td>
+          <td><span class="sprint-label">SPRINT 1</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>🔍 HalalScan</strong><br><span style="color:var(--muted)">Ingredient checker — 0 results on Chrome</span></td>
+          <td><span class="score high">64</span></td>
+          <td>Chrome → iOS</td>
+          <td>6-8h</td>
+          <td><span class="niche-tag muslim">Muslim</span></td>
+          <td><span class="sprint-label s3">SPRINT 3</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>📿 Tasbeeh Pro</strong><br><span style="color:var(--muted)">Dhikr counter + streaks + haptics</span></td>
+          <td><span class="score high">63</span></td>
+          <td>Both</td>
+          <td>4-5h</td>
+          <td><span class="niche-tag muslim">Muslim</span></td>
+          <td><span class="sprint-label">SPRINT 1</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>⏰ Fasting Timer</strong><br><span style="color:var(--muted)">Intermittent fasting — untouched on Chrome</span></td>
+          <td><span class="score high">63</span></td>
+          <td>Chrome</td>
+          <td>3-4h</td>
+          <td><span class="niche-tag health">Health</span></td>
+          <td><span class="sprint-label">SPRINT 1</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong>📿 Dhikr Counter (Chrome)</strong><br><span style="color:var(--muted)">Shares code with Ramadan countdown</span></td>
+          <td><span class="score high">62</span></td>
+          <td>Chrome</td>
+          <td>2-3h</td>
+          <td><span class="niche-tag muslim">Muslim</span></td>
+          <td><span class="sprint-label">SPRINT 1</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><strong>🔊 Brown Noise Generator</strong><br><span style="color:var(--muted)">ADHD focus — viral TikTok trend</span></td>
+          <td><span class="score mid">60</span></td>
+          <td>Both</td>
+          <td>1-3h</td>
+          <td><span class="niche-tag adhd">ADHD</span></td>
+          <td><span class="sprint-label s2">SPRINT 2</span></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td><strong>🧠 ADHD Tab Limiter</strong><br><span style="color:var(--muted)">Shame-free tab closer — 0 competitors</span></td>
+          <td><span class="score mid">58</span></td>
+          <td>Chrome</td>
+          <td>3-4h</td>
+          <td><span class="niche-tag adhd">ADHD</span></td>
+          <td><span class="sprint-label s2">SPRINT 2</span></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td><strong>👥 Body Doubling Timer</strong><br><span style="color:var(--muted)">Virtual co-working for focus</span></td>
+          <td><span class="score mid">58</span></td>
+          <td>Both</td>
+          <td>6-8h</td>
+          <td><span class="niche-tag adhd">ADHD</span></td>
+          <td><span class="sprint-label s2">SPRINT 2</span></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td><strong>🤲 Duas Daily</strong><br><span style="color:var(--muted)">Contextual dua widget + new tab</span></td>
+          <td><span class="score mid">57</span></td>
+          <td>Both</td>
+          <td>4-5h</td>
+          <td><span class="niche-tag muslim">Muslim</span></td>
+          <td><span class="sprint-label s3">SPRINT 3</span></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td><strong>🚫 Niyyah Focus Blocker</strong><br><span style="color:var(--muted)">Auto-blocks during prayer times</span></td>
+          <td><span class="score mid">56</span></td>
+          <td>Chrome</td>
+          <td>4-6h</td>
+          <td><span class="niche-tag muslim">Muslim</span></td>
+          <td><span class="sprint-label s3">SPRINT 3</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight"><strong>💡 Key insight:</strong> Cross-language beats cross-platform. Simple English utilities have ZERO competition in Arabic, Turkish, Hindi, Urdu — 2B+ users unserved.</div>
+  <div class="insight"><strong>⏰ Time-critical:</strong> Ramadan starts Feb 28. Sprint 1 products must ship by Feb 25 to capture seasonal demand spike.</div>
+  <div class="insight"><strong>💰 Revenue target:</strong> $2,600–9,800/mo across 9-10 products within 6-12 months. Multiply 3-5x with localization.</div>
+</section>
 
 <section>
   <h2>✅ Completed</h2>
