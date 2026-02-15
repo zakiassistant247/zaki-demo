@@ -3,489 +3,487 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zaki 🐾 — Command Center</title>
+<title>Zaki Command Center</title>
 <style>
-  :root {
-    --bg: #0d1117;
-    --card: #161b22;
-    --border: #30363d;
-    --text: #e6edf3;
-    --muted: #8b949e;
-    --green: #3fb950;
-    --yellow: #d29922;
-    --red: #f85149;
-    --blue: #58a6ff;
-    --purple: #bc8cff;
-    --orange: #f78166;
-    --teal: #39d353;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--surface3:#22222f;--border:#2a2a3a;--text:#e4e4ed;--text2:#8888a0;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;--cyan:#06b6d4;--pink:#ec4899}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+a{color:var(--accent2);text-decoration:none}a:hover{text-decoration:underline}
+button{cursor:pointer;font-family:inherit;font-size:.875rem;border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:.5rem 1rem;border-radius:.5rem;transition:all .15s}
+button:hover{background:var(--surface3);border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}button.primary:hover{background:var(--accent2)}
+button.danger{border-color:var(--red);color:var(--red)}button.danger:hover{background:var(--red);color:#fff}
+button.sm{padding:.25rem .5rem;font-size:.75rem}
+input,select,textarea{font-family:inherit;font-size:.875rem;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.5rem .75rem;border-radius:.5rem;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:60px}
+select{appearance:auto}
 
-  /* Navigation */
-  nav { position: sticky; top: 0; background: rgba(13,17,23,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
-  nav .inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 52px; }
-  nav .logo { font-weight: 700; font-size: 1.1em; }
-  nav .links { display: flex; gap: 4px; }
-  nav .links a { color: var(--muted); text-decoration: none; font-size: 0.85em; padding: 6px 12px; border-radius: 6px; transition: all 0.15s; }
-  nav .links a:hover, nav .links a.active { color: var(--text); background: var(--card); }
+.container{max-width:1200px;margin:0 auto;padding:1rem}
+header{padding:1.5rem 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+header h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+header h1 span{color:var(--accent)}
+.tabs{display:flex;gap:.25rem;flex-wrap:wrap}
+.tabs button{border:none;background:transparent;color:var(--text2);padding:.5rem 1rem;border-radius:.5rem;font-weight:500}
+.tabs button.active{background:var(--surface2);color:var(--text)}
+.tabs button:hover{color:var(--text)}
 
-  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+/* Dashboard */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem}
+.stat .label{font-size:.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem}
+.stat .value{font-size:1.75rem;font-weight:700}
+.stat .sub{font-size:.75rem;color:var(--text2);margin-top:.25rem}
+.stat.highlight{border-color:var(--accent);background:linear-gradient(135deg,rgba(99,102,241,.08),transparent)}
 
-  /* Hero */
-  .hero { text-align: center; padding: 40px 0 30px; }
-  .hero h1 { font-size: 2.2em; margin-bottom: 6px; }
-  .hero p { color: var(--muted); font-size: 1em; }
-  .hero .updated { color: var(--muted); font-size: 0.8em; margin-top: 8px; opacity: 0.7; }
+/* Section */
+.section{margin-bottom:2rem}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.section-header h2{font-size:1.125rem;font-weight:600}
 
-  /* Top-level KPIs */
-  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 40px; }
-  .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-  .kpi .num { font-size: 2em; font-weight: 800; line-height: 1.1; }
-  .kpi .label { color: var(--muted); font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-  .kpi .sub { color: var(--muted); font-size: 0.75em; margin-top: 4px; }
-  .kpi.green .num { color: var(--green); }
-  .kpi.yellow .num { color: var(--yellow); }
-  .kpi.blue .num { color: var(--blue); }
-  .kpi.purple .num { color: var(--purple); }
-  .kpi.orange .num { color: var(--orange); }
+/* CRM Table */
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:.75rem;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:.8125rem}
+th{text-align:left;padding:.75rem;color:var(--text2);font-weight:500;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:.625rem .75rem;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.badge{display:inline-block;padding:.125rem .5rem;border-radius:9999px;font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.badge.new{background:rgba(99,102,241,.15);color:var(--accent2)}
+.badge.contacted{background:rgba(6,182,212,.15);color:var(--cyan)}
+.badge.opened{background:rgba(234,179,8,.15);color:var(--yellow)}
+.badge.replied{background:rgba(249,115,22,.15);color:var(--orange)}
+.badge.meeting{background:rgba(236,72,153,.15);color:var(--pink)}
+.badge.closed{background:rgba(34,197,94,.15);color:var(--green)}
 
-  /* Sections */
-  .section { margin-bottom: 40px; }
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .section-header h2 { font-size: 1.3em; }
-  .section-header .badge { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; font-size: 0.75em; color: var(--muted); }
+/* Filters */
+.filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.filters input,.filters select{width:auto;min-width:140px}
 
-  /* Cards grid */
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
-  .card:hover { border-color: var(--muted); }
-  .card h3 { font-size: 1em; margin-bottom: 4px; }
-  .card .meta { color: var(--muted); font-size: 0.8em; margin-bottom: 8px; }
-  .card .desc { color: var(--muted); font-size: 0.85em; }
-  .card .links { margin-top: 10px; }
-  .card .links a { color: var(--blue); text-decoration: none; font-size: 0.82em; margin-right: 14px; }
-  .card .links a:hover { text-decoration: underline; }
-  .card .status { display: inline-block; font-size: 0.7em; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
-  .card .status.ready { background: #3fb95022; color: var(--green); }
-  .card .status.wip { background: #d2992222; color: var(--yellow); }
-  .card .status.blocked { background: #f8514922; color: var(--red); }
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1.5rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:1rem;font-weight:600;margin-bottom:1rem}
+.form-row{margin-bottom:.75rem}
+.form-row label{display:block;font-size:.75rem;color:var(--text2);margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.04em}
+.form-actions{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem}
 
-  /* Tag styles */
-  .tag { display: inline-block; font-size: 0.7em; padding: 2px 8px; border-radius: 12px; font-weight: 600; margin-left: 4px; }
-  .tag.infra { background: #1f3a5f; color: var(--blue); }
-  .tag.sales { background: #3f1f2a; color: var(--orange); }
-  .tag.product { background: #2a1f3f; color: var(--purple); }
-  .tag.comms { background: #1f3f2a; color: var(--green); }
-  .tag.cost { background: #3f2a1f; color: var(--yellow); }
+/* Products */
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.product-card{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem}
+.product-card h3{font-size:1rem;font-weight:600;margin-bottom:.5rem}
+.product-card .price{color:var(--green);font-weight:600;font-size:.875rem}
+.product-card .meta{font-size:.75rem;color:var(--text2);margin-top:.5rem}
 
-  /* Task list */
-  .task-list { display: flex; flex-direction: column; gap: 8px; }
-  .task { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; }
-  .task:hover { border-color: var(--muted); }
-  .task .icon { font-size: 1.1em; flex-shrink: 0; margin-top: 1px; }
-  .task .content { flex: 1; }
-  .task .title { font-weight: 600; font-size: 0.9em; }
-  .task .desc { color: var(--muted); font-size: 0.82em; margin-top: 2px; }
+/* Campaigns */
+.campaign-card{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;margin-bottom:.75rem}
+.campaign-card h3{font-size:.9375rem;font-weight:600;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.campaign-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:.75rem}
+.campaign-stat{text-align:center}
+.campaign-stat .num{font-size:1.25rem;font-weight:700}
+.campaign-stat .lbl{font-size:.6875rem;color:var(--text2);text-transform:uppercase}
+.editable{cursor:pointer;border-bottom:1px dashed var(--border)}
+.editable:hover{border-color:var(--accent)}
 
-  /* Pipeline table */
-  .pipeline-table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
-  .pipeline-table th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 0.72em; text-transform: uppercase; letter-spacing: 0.5px; }
-  .pipeline-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-  .pipeline-table tr:hover { background: rgba(255,255,255,0.02); }
-  .score { font-weight: 700; }
-  .score.high { color: var(--green); }
-  .score.mid { color: var(--yellow); }
-  .niche-tag { display: inline-block; font-size: 0.68em; padding: 2px 6px; border-radius: 8px; font-weight: 600; }
-  .niche-tag.muslim { background: #1a3a2a; color: #3fb950; }
-  .niche-tag.adhd { background: #2a1f3f; color: #bc8cff; }
-  .niche-tag.health { background: #1f3a5f; color: #58a6ff; }
-  .sprint-label { display: inline-block; font-size: 0.62em; padding: 2px 6px; border-radius: 6px; font-weight: 700; }
-  .sprint-label.s1 { background: #3fb95022; color: var(--green); }
-  .sprint-label.s2 { background: #d2992222; color: var(--yellow); }
-  .sprint-label.s3 { background: #58a6ff22; color: var(--blue); }
+/* Quick Actions */
+.quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem}
+.qa-link{display:flex;align-items:center;gap:.75rem;background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1rem;transition:all .15s;text-decoration:none;color:var(--text)}
+.qa-link:hover{border-color:var(--accent);background:var(--surface2);text-decoration:none}
+.qa-link .icon{font-size:1.25rem;width:2rem;text-align:center}
+.qa-link .qa-label{font-size:.875rem;font-weight:500}
 
-  /* Insight callouts */
-  .insight { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; font-size: 0.85em; }
-  .insight strong { color: var(--yellow); }
-  .insight.green { border-left-color: var(--green); }
-  .insight.green strong { color: var(--green); }
-  .insight.red { border-left-color: var(--red); }
-  .insight.red strong { color: var(--red); }
+/* Templates */
+.template-card{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1rem;margin-bottom:.75rem}
+.template-card h4{font-size:.875rem;font-weight:600;margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center}
+.template-card pre{font-size:.75rem;color:var(--text2);white-space:pre-wrap;word-break:break-word;max-height:120px;overflow-y:auto;background:var(--surface2);padding:.75rem;border-radius:.5rem;margin-top:.5rem}
 
-  /* Lead stats bar */
-  .lead-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin: 8px 0; }
-  .lead-bar .seg { height: 100%; }
-  .lead-bar .seg.s90 { background: var(--green); }
-  .lead-bar .seg.s80 { background: #2ea043; }
-  .lead-bar .seg.s70 { background: var(--yellow); }
-  .lead-bar .seg.s60 { background: var(--orange); }
-  .lead-bar .seg.slow { background: var(--red); }
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--green);color:#fff;padding:.75rem 1.25rem;border-radius:.5rem;font-size:.875rem;font-weight:500;z-index:200;opacity:0;transform:translateY(10px);transition:all .3s}
+.toast.show{opacity:1;transform:translateY(0)}
 
-  /* Progress bar */
-  .progress-wrap { margin: 8px 0; }
-  .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-  .progress-bar .fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--blue), var(--green)); }
-
-  /* Two column layout */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } .cards { grid-template-columns: 1fr; } }
-
-  footer { text-align: center; color: var(--muted); font-size: 0.8em; padding: 30px 0; border-top: 1px solid var(--border); margin-top: 20px; }
-  footer a { color: var(--blue); text-decoration: none; }
+/* Hide sections */
+.panel{display:none}.panel.active{display:block}
+@media(max-width:640px){.stats{grid-template-columns:1fr 1fr}.filters input,.filters select{min-width:100px;font-size:.75rem}table{font-size:.75rem}th,td{padding:.5rem}}
 </style>
 </head>
 <body>
-
-<nav>
-  <div class="inner">
-    <div class="logo">🐾 Zaki</div>
-    <div class="links">
-      <a href="#scopax" class="active">Scopax</a>
-      <a href="#leads">Leads</a>
-      <a href="#extensions">Extensions</a>
-      <a href="#projects">Projects</a>
-      <a href="#samed-todo">Samed TODO</a>
-      <a href="#infra">Infra</a>
-    </div>
-  </div>
-</nav>
-
 <div class="container">
+<header>
+<h1>⚡ <span>Zaki</span> Command Center</h1>
+<nav class="tabs">
+<button class="active" data-tab="dashboard">Dashboard</button>
+<button data-tab="crm">CRM</button>
+<button data-tab="products">Products</button>
+<button data-tab="campaigns">Campaigns</button>
+<button data-tab="actions">Quick Actions</button>
+</nav>
+</header>
 
-<div class="hero">
-  <h1>Command Center</h1>
-  <p>Everything Samed needs — one page, always current</p>
-  <div class="updated">Last updated: February 14, 2026 · 13:40 CET</div>
+<!-- DASHBOARD -->
+<div id="dashboard" class="panel active">
+<div class="stats">
+<div class="stat highlight"><div class="label">Revenue Target</div><div class="value">£10K<span style="font-size:.875rem;color:var(--text2)">/mo</span></div><div class="sub">Monthly recurring goal</div></div>
+<div class="stat"><div class="label">Current Revenue</div><div class="value" id="d-revenue">£0</div><div class="sub">This month</div></div>
+<div class="stat"><div class="label">Pipeline Leads</div><div class="value" id="d-leads">0</div><div class="sub" id="d-leads-sub">Add leads in CRM</div></div>
+<div class="stat"><div class="label">Pipeline Value</div><div class="value" id="d-value">£0</div><div class="sub">Total potential</div></div>
+<div class="stat"><div class="label">Active Campaigns</div><div class="value" id="d-campaigns">0</div><div class="sub">SCS + DocDrop</div></div>
+<div class="stat"><div class="label">Closed Deals</div><div class="value" id="d-closed">0</div><div class="sub">This month</div></div>
+</div>
+<div class="section">
+<h2 style="font-size:1rem;font-weight:600;margin-bottom:.75rem">Pipeline by Status</h2>
+<div id="pipeline-bars" style="display:flex;gap:.5rem;flex-wrap:wrap"></div>
+</div>
 </div>
 
-<!-- ====== TOP KPIs ====== -->
-<div class="kpis">
-  <div class="kpi green">
-    <div class="num">~1,200</div>
-    <div class="label">Qualified Leads</div>
-    <div class="sub">Target: 2,000 · 9 agents running</div>
-  </div>
-  <div class="kpi purple">
-    <div class="num">3</div>
-    <div class="label">Extensions Built</div>
-    <div class="sub">v1.0.2 · QA passed · Ready to publish</div>
-  </div>
-  <div class="kpi yellow">
-    <div class="num">14</div>
-    <div class="label">Days to Ramadan</div>
-    <div class="sub">Feb 28 · Extensions must ship by Feb 25</div>
-  </div>
-  <div class="kpi blue">
-    <div class="num">$199</div>
-    <div class="label">CalVault MRR Target</div>
-    <div class="sub">/mo per customer · Unlimited seats</div>
-  </div>
+<!-- CRM -->
+<div id="crm" class="panel">
+<div class="section">
+<div class="section-header">
+<h2>Pipeline Tracker</h2>
+<div style="display:flex;gap:.5rem;flex-wrap:wrap">
+<button class="sm" onclick="importCSV()">📥 Import CSV</button>
+<button class="sm" onclick="exportCSV()">📤 Export CSV</button>
+<button class="primary sm" onclick="openLeadModal()">+ Add Lead</button>
+</div>
+</div>
+<div class="filters">
+<input type="text" id="f-search" placeholder="Search leads..." oninput="renderLeads()">
+<select id="f-status" onchange="renderLeads()"><option value="">All Status</option><option>New</option><option>Contacted</option><option>Opened</option><option>Replied</option><option>Meeting</option><option>Closed</option></select>
+<select id="f-product" onchange="renderLeads()"><option value="">All Products</option><option>SCS</option><option>DocDrop</option><option>CalVault</option></select>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Lead</th><th>Company</th><th>Status</th><th>Product</th><th>Value</th><th>Last Contact</th><th>Notes</th><th></th></tr></thead>
+<tbody id="leads-tbody"></tbody>
+</table>
+</div>
+<div id="no-leads" style="text-align:center;padding:3rem;color:var(--text2);display:none">No leads yet. Add one or import a CSV.</div>
+</div>
 </div>
 
-<!-- ====== SCOPAX / CALVAULT SALES ====== -->
-<div class="section" id="scopax">
-  <div class="section-header">
-    <h2>🎯 Scopax CalVault — Sales Pipeline</h2>
-    <span class="badge">PRIORITY #1</span>
-  </div>
-
-  <div class="two-col" style="margin-bottom: 16px;">
-    <div class="card">
-      <h3>📊 Lead Database Status</h3>
-      <div style="font-size: 2em; font-weight: 800; color: var(--green);">880 qualified</div>
-      <div style="color: var(--muted); font-size: 0.82em;">+ ~320 from new research agents running now</div>
-      <div class="lead-bar" title="Score distribution">
-        <div class="seg s90" style="width:30%"></div>
-        <div class="seg s80" style="width:20%"></div>
-        <div class="seg s70" style="width:8%"></div>
-        <div class="seg s60" style="width:24%"></div>
-        <div class="seg slow" style="width:18%"></div>
-      </div>
-      <div style="display:flex; justify-content:space-between; font-size:0.7em; color:var(--muted);">
-        <span>🟢 90+ (261)</span><span>🟢 80s (177)</span><span>🟡 70s (71)</span><span>🟠 60s (213)</span><span>🔴 &lt;60 (158)</span>
-      </div>
-      <div style="margin-top:10px; font-size:0.82em;">
-        <strong>14 perfect-score leads</strong> ready for immediate outreach<br>
-        <strong>~50%</strong> score 80+ (send-ready)
-      </div>
-    </div>
-    <div class="card">
-      <h3>🌍 Geographic Coverage</h3>
-      <div style="font-size:0.82em; margin-top:8px;">
-        <div style="margin-bottom:4px;">🇺🇸 <strong>US</strong> — 10 regions covered (CA, TX, NE, Mid-Atlantic, SE, Midwest, PNW, Mountain, NY, WA)</div>
-        <div style="margin-bottom:4px;">🇬🇧 <strong>UK/Ireland</strong> — Aerospace, defense, multi-sector, medical</div>
-        <div style="margin-bottom:4px;">🇨🇦 <strong>Canada</strong> — Ontario, Quebec, Manitoba (42 leads)</div>
-        <div style="margin-bottom:4px;">🇦🇺 <strong>Australia/NZ</strong> — F-35/AUKUS supply chain (30 leads)</div>
-        <div style="margin-bottom:4px;">🇩🇪 <strong>DACH</strong> — New prompt ready, agents researching</div>
-        <div style="margin-bottom:4px;">🇸🇪 <strong>Nordics</strong> — New prompt ready, agents researching</div>
-        <div style="margin-bottom:4px;">🇮🇳🇯🇵🇰🇷 <strong>Asia-Pacific</strong> — India, Japan, Korea (30 leads)</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="two-col" style="margin-bottom:16px;">
-    <div class="card">
-      <h3>🔥 Urgency Leads <span class="tag sales">HOT</span></h3>
-      <div class="desc">Agent hunting for companies with:</div>
-      <ul style="font-size:0.82em; margin-top:8px; padding-left:18px; color:var(--muted);">
-        <li><strong>FDA warning letters</strong> mentioning calibration/OOT</li>
-        <li><strong>NADCAP suspensions</strong> — lost accreditation</li>
-        <li><strong>AS9100 major nonconformities</strong></li>
-        <li><strong>Boeing/Airbus managed supplier</strong> list</li>
-        <li><strong>DCMA corrective action requests</strong></li>
-        <li><strong>Job postings</strong> for calibration roles (= overwhelmed)</li>
-      </ul>
-      <div style="margin-top:8px; font-size:0.82em; color:var(--orange);">⏳ Agent running — results incoming</div>
-    </div>
-    <div class="card">
-      <h3>📬 Outreach System</h3>
-      <div style="font-size:0.82em; margin-top:8px;">
-        <div style="margin-bottom:6px;">✅ <strong>Prompt template v3.0</strong> — Lead scoring (0-100), verification protocol, trigger events</div>
-        <div style="margin-bottom:6px;">✅ <strong>Email templates</strong> — Cold, personalized, honest versions ready</div>
-        <div style="margin-bottom:6px;">⏳ <strong>Personalization playbook</strong> — 60-cell trigger×vertical matrix building now</div>
-        <div style="margin-bottom:6px;">📋 <strong>HubSpot import CSVs</strong> — UK + Ireland ready</div>
-        <div style="margin-bottom:6px;">📋 <strong>Master CSV</strong> — 880 leads, CRM-ready</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="insight red"><strong>🚨 Key finding:</strong> Only 43% of original leads were send-ready. 75 duplicates and 46 exclusion violations removed. California was worst region (barely any real contacts).</div>
-  <div class="insight green"><strong>✅ Fixed:</strong> Master list now deduplicated, scored, and ranked. 14 perfect-100 leads for immediate outreach. CSV ready for CRM import.</div>
+<!-- PRODUCTS -->
+<div id="products" class="panel">
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.125rem;font-weight:600">Products</h2>
+<div class="products">
+<div class="product-card" style="border-color:var(--accent)"><h3>🚢 SCS</h3><div class="price">£5,000 one-time</div><div class="meta">Supply Chain System for freight forwarders<br><span style="color:var(--green)">● Actively selling</span></div></div>
+<div class="product-card" style="border-color:var(--cyan)"><h3>📄 DocDrop</h3><div class="price">£1,500 – £3,000</div><div class="meta">Document automation for bookkeepers<br><span style="color:var(--green)">● Actively selling</span></div></div>
+<div class="product-card" style="border-color:var(--yellow)"><h3>🔧 CalVault</h3><div class="price">$199/mo</div><div class="meta">Calibration compliance platform<br><span style="color:var(--yellow)">● Warming up</span></div></div>
+<div class="product-card"><h3>🧩 Chrome Extensions</h3><div class="price">Various</div><div class="meta">Utility extensions, built<br><span style="color:var(--text2)">○ Not published</span></div></div>
+<div class="product-card"><h3>📰 Residual Risk</h3><div class="price">Newsletter</div><div class="meta">Compliance content<br><span style="color:var(--cyan)">● Content ready</span></div></div>
+</div>
+</div>
 </div>
 
-<!-- ====== CHROME EXTENSIONS ====== -->
-<div class="section" id="extensions">
-  <div class="section-header">
-    <h2>🧩 Chrome Extensions — Sprint 1</h2>
-    <span class="badge">SHIP BY FEB 25</span>
-  </div>
-
-  <div class="cards" style="margin-bottom:16px;">
-    <div class="card">
-      <h3>🌙 Ramadan Iftar Countdown <span class="status ready">v1.0.2 ✓</span></h3>
-      <div class="meta">Prayer time countdown · Suhoor alerts · Hijri date · Ramadan awareness</div>
-      <div class="desc">QA R3 passed. All P1s fixed: Ramadan detection, accurate next-day times, host_permissions, accessibility.</div>
-    </div>
-    <div class="card">
-      <h3>📿 Dhikr Counter <span class="status ready">v1.0.2 ✓</span></h3>
-      <div class="meta">5 dhikr types · Streaks · Sound · History · Per-dhikr counts</div>
-      <div class="desc">QA R3 passed. Fixed: per-dhikr count persistence, save bug, aria-labels, version bump.</div>
-    </div>
-    <div class="card">
-      <h3>⏰ Fasting Timer <span class="status ready">v1.0.2 ✓</span></h3>
-      <div class="meta">Intermittent + Ramadan fasting · 14 prayer calc methods · Progress ring</div>
-      <div class="desc">QA R3 passed. Fixed: Fajr-based start, calc method selector, partial fast visuals, API caching.</div>
-    </div>
-  </div>
-
-  <div class="insight red"><strong>⏰ BLOCKER:</strong> Need Chrome Web Store developer account ($5 fee) + Google Cloud OAuth setup to publish. Samed must do this — can't automate past CAPTCHA/2FA.</div>
-
-  <div style="margin-top:16px;">
-    <div class="section-header" style="border:none; padding:0; margin-bottom:12px;">
-      <h3 style="font-size:1em;">Full Product Pipeline</h3>
-      <span class="badge">10 products</span>
-    </div>
-    <table class="pipeline-table">
-      <thead>
-        <tr><th>#</th><th>Product</th><th>Score</th><th>Niche</th><th>Sprint</th><th>Status</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>1</td><td><strong>🌙 Ramadan Countdown</strong></td><td><span class="score high">64</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s1">S1</span></td><td>✅ Built + QA'd</td></tr>
-        <tr><td>2</td><td><strong>📿 Dhikr Counter</strong></td><td><span class="score high">63</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s1">S1</span></td><td>✅ Built + QA'd</td></tr>
-        <tr><td>3</td><td><strong>⏰ Fasting Timer</strong></td><td><span class="score high">63</span></td><td><span class="niche-tag health">Health</span></td><td><span class="sprint-label s1">S1</span></td><td>✅ Built + QA'd</td></tr>
-        <tr><td>4</td><td><strong>🔍 HalalScan</strong></td><td><span class="score high">64</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s3">S3</span></td><td>📋 Spec'd</td></tr>
-        <tr><td>5</td><td><strong>🔊 Brown Noise</strong></td><td><span class="score mid">60</span></td><td><span class="niche-tag adhd">ADHD</span></td><td><span class="sprint-label s2">S2</span></td><td>📋 Spec'd</td></tr>
-        <tr><td>6</td><td><strong>🧠 Tab Limiter</strong></td><td><span class="score mid">58</span></td><td><span class="niche-tag adhd">ADHD</span></td><td><span class="sprint-label s2">S2</span></td><td>📋 Spec'd</td></tr>
-        <tr><td>7</td><td><strong>👥 Body Doubling</strong></td><td><span class="score mid">58</span></td><td><span class="niche-tag adhd">ADHD</span></td><td><span class="sprint-label s2">S2</span></td><td>📋 Spec'd</td></tr>
-        <tr><td>8</td><td><strong>🤲 Duas Daily</strong></td><td><span class="score mid">57</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s3">S3</span></td><td>📋 Spec'd</td></tr>
-        <tr><td>9</td><td><strong>🚫 Niyyah Blocker</strong></td><td><span class="score mid">56</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s3">S3</span></td><td>📋 Spec'd</td></tr>
-        <tr><td>10</td><td><strong>📿 Tasbeeh Pro</strong></td><td><span class="score high">63</span></td><td><span class="niche-tag muslim">Muslim</span></td><td><span class="sprint-label s1">S1</span></td><td>📋 Spec'd</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="insight" style="margin-top:12px;"><strong>💡 Key insight:</strong> Cross-language beats cross-platform. Simple English utilities have ZERO competition in Arabic, Turkish, Hindi, Urdu — 2B+ users unserved.</div>
-  <div class="insight"><strong>💰 Revenue target:</strong> $2,600–9,800/mo across 9-10 products within 6-12 months. 3-5x with localization.</div>
+<!-- CAMPAIGNS -->
+<div id="campaigns" class="panel">
+<div class="section">
+<div class="section-header"><h2>Campaign Tracker</h2><button class="primary sm" onclick="openCampaignModal()">+ Add Campaign</button></div>
+<div id="campaigns-list"></div>
+<div id="no-campaigns" style="text-align:center;padding:3rem;color:var(--text2);display:none">No campaigns yet. Add one to start tracking.</div>
+</div>
 </div>
 
-<!-- ====== SAMED TODO ====== -->
-<div class="section" id="samed-todo">
-  <div class="section-header">
-    <h2>📱 Samed's Action Items</h2>
-    <span class="badge">Things only you can do</span>
-  </div>
-  <p style="color:var(--muted); font-size:0.85em; margin-bottom:12px;">These are blocked on you — Zaki can't do them due to CAPTCHAs, payment, or 2FA requirements.</p>
+<!-- QUICK ACTIONS -->
+<div id="actions" class="panel">
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.125rem;font-weight:600">Quick Actions</h2>
+<div class="quick-actions">
+<a class="qa-link" href="https://mail.google.com" target="_blank"><div class="icon">📧</div><div class="qa-label">Gmail</div></a>
+<a class="qa-link" href="https://find-and-update.company-information.service.gov.uk/" target="_blank"><div class="icon">🏛️</div><div class="qa-label">Companies House</div></a>
+<a class="qa-link" href="https://www.linkedin.com/search/results/people/" target="_blank"><div class="icon">💼</div><div class="qa-label">LinkedIn Search</div></a>
+<a class="qa-link" href="https://github.com/itszaki01" target="_blank"><div class="icon">🐙</div><div class="qa-label">GitHub Repos</div></a>
+<a class="qa-link" href="https://hunter.io" target="_blank"><div class="icon">🎯</div><div class="qa-label">Hunter.io</div></a>
+<a class="qa-link" href="https://www.google.com/maps" target="_blank"><div class="icon">🗺️</div><div class="qa-label">Google Maps</div></a>
+</div>
+</div>
+<div class="section" style="margin-top:2rem">
+<h2 style="margin-bottom:1rem;font-size:1.125rem;font-weight:600">Email Templates</h2>
+<div id="templates-list">
+<div class="template-card"><h4>SCS Cold Outreach <button class="sm" onclick="copyTemplate('scs1')">Copy</button></h4><pre id="scs1">Subject: Quick question about [Company]'s freight ops
 
-  <div class="task-list">
-    <div class="task" style="border-left: 3px solid var(--red);">
-      <span class="icon">🔴</span>
-      <div class="content">
-        <div class="title">Chrome Web Store — Pay $5 + OAuth setup <span class="tag product">product</span></div>
-        <div class="desc"><strong>~10 min from phone.</strong> Go to <a href="https://chrome.google.com/webstore/devconsole" style="color:var(--blue)">chrome.google.com/webstore/devconsole</a> → Pay $5 → Then: Google Cloud Console → new project → enable CWS API → create OAuth client → get refresh token via OAuth Playground. Send Zaki: CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN.</div>
-      </div>
-    </div>
-    <div class="task" style="border-left: 3px solid var(--orange);">
-      <span class="icon">🟠</span>
-      <div class="content">
-        <div class="title">ElevenLabs — Sign up + send API key <span class="tag infra">infra</span></div>
-        <div class="desc"><strong>30 seconds.</strong> <a href="https://elevenlabs.io/app/sign-up" style="color:var(--blue)">elevenlabs.io</a> → Sign up with Google (zakiassistant247@gmail.com) → Settings → API Keys → paste to Zaki. Free tier = 10k chars/mo.</div>
-      </div>
-    </div>
-    <div class="task" style="border-left: 3px solid var(--orange);">
-      <span class="icon">🟠</span>
-      <div class="content">
-        <div class="title">Brave Search API key <span class="tag infra">infra</span></div>
-        <div class="desc"><strong>2 min.</strong> <a href="https://brave.com/search/api/" style="color:var(--blue)">brave.com/search/api</a> → Free tier (2k queries/mo) → Copy API key → send to Zaki. Unlocks 10x more lead research.</div>
-      </div>
-    </div>
-    <div class="task" style="border-left: 3px solid var(--yellow);">
-      <span class="icon">🟡</span>
-      <div class="content">
-        <div class="title">Supabase env vars for Tote admin <span class="tag sales">project</span></div>
-        <div class="desc">Need SUPABASE_URL + SUPABASE_ANON_KEY + SUPABASE_SERVICE_KEY for local Tote admin dashboard testing.</div>
-      </div>
-    </div>
-    <div class="task" style="border-left: 3px solid var(--yellow);">
-      <span class="icon">🟡</span>
-      <div class="content">
-        <div class="title">Cheaper AI model — API key <span class="tag cost">cost</span></div>
-        <div class="desc">Still on Opus ($$$). Options: NVIDIA API key (free Kimi K2.5) at <a href="https://build.nvidia.com" style="color:var(--blue)">build.nvidia.com</a>, or MiniMax OAuth setup.</div>
-      </div>
-    </div>
-  </div>
+Hi [Name],
+
+I noticed [Company] handles [X] — are you still managing shipment tracking and documentation manually?
+
+We built a supply chain system that automates tracking, docs, and compliance for freight forwarders. Takes about 2 weeks to set up, one-time cost.
+
+Would a 15-min demo be worth your time this week?
+
+Best,
+Samed</pre></div>
+<div class="template-card"><h4>SCS Follow-up <button class="sm" onclick="copyTemplate('scs2')">Copy</button></h4><pre id="scs2">Subject: Re: Quick question about [Company]'s freight ops
+
+Hi [Name],
+
+Just following up — I know freight ops are hectic. Happy to send a 2-min video walkthrough instead if a call doesn't work.
+
+Either way, no pressure. Just thought it'd be relevant given what [Company] does.
+
+Best,
+Samed</pre></div>
+<div class="template-card"><h4>DocDrop Cold Outreach <button class="sm" onclick="copyTemplate('dd1')">Copy</button></h4><pre id="dd1">Subject: Automate document handling for [Company]
+
+Hi [Name],
+
+Do your team still manually sort, rename, and file client documents? We built DocDrop — it automates document intake, extraction, and filing for bookkeepers.
+
+Most firms save 10+ hours/week. One-time setup, no monthly fees.
+
+Worth a quick look?
+
+Best,
+Samed</pre></div>
+<div class="template-card"><h4>DocDrop Follow-up <button class="sm" onclick="copyTemplate('dd2')">Copy</button></h4><pre id="dd2">Subject: Re: Automate document handling for [Company]
+
+Hi [Name],
+
+Circling back on this — I know tax season keeps things busy.
+
+If it helps, I can send a short video showing how DocDrop works with your existing workflow. No call needed.
+
+Best,
+Samed</pre></div>
+</div>
+</div>
+</div>
 </div>
 
-<!-- ====== ACTIVE PROJECTS ====== -->
-<div class="section" id="projects">
-  <div class="section-header">
-    <h2>📦 Active Projects</h2>
-  </div>
-
-  <div class="cards">
-    <div class="card">
-      <h3>⚖️ CalVault (Scopax)</h3>
-      <div class="meta">Next.js · Supabase · Tailwind · shadcn/ui</div>
-      <div class="desc">Calibration compliance SaaS. Generates audit-ready evidence packs in 60s vs 8+ hours with Excel. $199/mo unlimited seats.</div>
-      <div class="links">
-        <a href="https://github.com/samednakhla/calibration">GitHub</a>
-        <a href="#">Vercel ↗</a>
-      </div>
-    </div>
-    <div class="card">
-      <h3>🚚 Tote 2.0</h3>
-      <div class="meta">Flutter · Next.js · Supabase · Stripe · Google Maps</div>
-      <div class="desc">On-demand delivery platform for Norway. Mobile app + admin dashboard. 415+ DB migrations.</div>
-      <div class="links">
-        <a href="https://github.com/samednakhla/tote_2.0">GitHub</a>
-        <a href="#">Vercel ↗</a>
-      </div>
-    </div>
-  </div>
+<!-- Lead Modal -->
+<div class="modal-bg" id="lead-modal">
+<div class="modal">
+<h3 id="lead-modal-title">Add Lead</h3>
+<div class="form-row"><label>Name</label><input id="l-name"></div>
+<div class="form-row"><label>Company</label><input id="l-company"></div>
+<div class="form-row"><label>Email</label><input id="l-email" type="email"></div>
+<div class="form-row"><label>Status</label><select id="l-status"><option>New</option><option>Contacted</option><option>Opened</option><option>Replied</option><option>Meeting</option><option>Closed</option></select></div>
+<div class="form-row"><label>Product</label><select id="l-product"><option>SCS</option><option>DocDrop</option><option>CalVault</option></select></div>
+<div class="form-row"><label>Value (£)</label><input id="l-value" type="number" placeholder="5000"></div>
+<div class="form-row"><label>Notes</label><textarea id="l-notes"></textarea></div>
+<div class="form-actions">
+<button onclick="closeModal('lead-modal')">Cancel</button>
+<button class="primary" onclick="saveLead()">Save</button>
+</div>
+</div>
 </div>
 
-<!-- ====== LEADS DETAIL ====== -->
-<div class="section" id="leads">
-  <div class="section-header">
-    <h2>📈 Lead Generation — Detailed Status</h2>
-  </div>
-
-  <div style="margin-bottom:16px;">
-    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
-      <span style="font-size:0.85em; font-weight:600;">Progress to 2,000 leads</span>
-      <span style="font-size:0.82em; color:var(--muted);">~1,200 / 2,000</span>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-bar"><div class="fill" style="width:60%"></div></div>
-    </div>
-  </div>
-
-  <h3 style="font-size:0.95em; margin-bottom:10px;">📁 Files in Repository</h3>
-  <table class="pipeline-table" style="margin-bottom:20px;">
-    <thead><tr><th>File</th><th>Type</th><th>Leads</th><th>Status</th></tr></thead>
-    <tbody>
-      <tr><td>MASTER-QUALIFIED-LEADS.md + .csv</td><td>Master list</td><td>880</td><td>✅ Scored & deduped</td></tr>
-      <tr><td>LEAD-QUALITY-AUDIT.md</td><td>Audit report</td><td>—</td><td>✅ Complete</td></tr>
-      <tr><td>PERSONALIZATION-PLAYBOOK.md</td><td>Outreach guide</td><td>—</td><td>⏳ Building</td></tr>
-      <tr><td>results/NEW-web-research-leads.md</td><td>New leads</td><td>14</td><td>✅ Verified</td></tr>
-      <tr><td>results/NEW-directory-research.md</td><td>New leads</td><td>31</td><td>✅ Complete</td></tr>
-      <tr><td>results/NEW-niche-verticals.md</td><td>New leads</td><td>85</td><td>✅ Complete</td></tr>
-      <tr><td>results/NEW-defense-medical-vertical.md</td><td>New leads</td><td>85</td><td>✅ Complete</td></tr>
-      <tr><td>results/NEW-canada-apac-expansion.md</td><td>New leads</td><td>102</td><td>✅ Complete</td></tr>
-      <tr><td>results/NEW-us-midwest-expansion.md</td><td>New leads</td><td>80+</td><td>⏳ Agent running</td></tr>
-      <tr><td>results/NEW-uk-europe-expansion.md</td><td>New leads</td><td>100</td><td>⏳ Agent running</td></tr>
-      <tr><td>results/NEW-us-southeast-northeast.md</td><td>New leads</td><td>100+</td><td>⏳ Agent running</td></tr>
-      <tr><td>results/NEW-audit-pain-urgent-leads.md</td><td>🔥 Hot leads</td><td>10-30</td><td>⏳ Agent running</td></tr>
-      <tr><td>results/NEW-buying-signals.md</td><td>🔥 Intent leads</td><td>15-30</td><td>⏳ Agent running</td></tr>
-      <tr><td>results/ENRICHED-california-pnw.md</td><td>Enrichment</td><td>11</td><td>✅ Complete</td></tr>
-      <tr><td>prompts/00-prompt-template-v3.md</td><td>Prompt v3</td><td>—</td><td>✅ Lead scoring, triggers</td></tr>
-      <tr><td>prompts/12-germany-dach.md</td><td>New region</td><td>75 target</td><td>✅ Ready to run</td></tr>
-      <tr><td>prompts/13-nordics-scandinavia.md</td><td>New region</td><td>50 target</td><td>✅ Ready to run</td></tr>
-      <tr><td>prompts/14-australia-nz.md</td><td>New region</td><td>50 target</td><td>✅ Ready to run</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-size:0.95em; margin-bottom:10px;">🏭 Industry Verticals</h3>
-  <div class="cards" style="margin-bottom:16px;">
-    <div class="card">
-      <div style="font-size:0.85em;">
-        <div>✈️ <strong>Aerospace & Defense</strong> — ~60% of leads</div>
-        <div>🏥 <strong>Medical Devices</strong> — ~20% of leads</div>
-        <div>⚙️ <strong>Precision Engineering</strong> — ~10%</div>
-        <div>☢️ <strong>Nuclear/Energy</strong> — ~5%</div>
-        <div>🚗 <strong>Automotive</strong> — ~5%</div>
-      </div>
-    </div>
-    <div class="card">
-      <h3 style="font-size:0.9em;">🔓 Unlock More Leads</h3>
-      <div style="font-size:0.82em; color:var(--muted); margin-top:6px;">
-        <div>🔑 <strong>Brave Search API</strong> → 10x web research capability</div>
-        <div>🔑 <strong>LinkedIn Sales Navigator</strong> → Named contacts + emails</div>
-        <div>🔑 <strong>ThomasNet login</strong> → Industrial supplier directory</div>
-        <div>🔑 <strong>eAuditNet login</strong> → NADCAP certified companies</div>
-      </div>
-    </div>
-  </div>
+<!-- Campaign Modal -->
+<div class="modal-bg" id="campaign-modal">
+<div class="modal">
+<h3 id="campaign-modal-title">Add Campaign</h3>
+<div class="form-row"><label>Campaign Name</label><input id="c-name" placeholder="e.g. SCS Cold Outreach #1"></div>
+<div class="form-row"><label>Product</label><select id="c-product"><option>SCS</option><option>DocDrop</option><option>CalVault</option></select></div>
+<div class="form-row"><label>Emails Sent</label><input id="c-sent" type="number" value="0"></div>
+<div class="form-row"><label>Opens</label><input id="c-opens" type="number" value="0"></div>
+<div class="form-row"><label>Replies</label><input id="c-replies" type="number" value="0"></div>
+<div class="form-row"><label>Meetings Booked</label><input id="c-meetings" type="number" value="0"></div>
+<div class="form-row"><label>Status</label><select id="c-status"><option>Active</option><option>Paused</option><option>Completed</option></select></div>
+<div class="form-actions">
+<button onclick="closeModal('campaign-modal')">Cancel</button>
+<button class="primary" onclick="saveCampaign()">Save</button>
+</div>
+</div>
 </div>
 
-<!-- ====== INFRASTRUCTURE ====== -->
-<div class="section" id="infra">
-  <div class="section-header">
-    <h2>🔧 Infrastructure</h2>
-    <span class="badge">All systems operational</span>
-  </div>
+<input type="file" id="csv-input" accept=".csv" style="display:none" onchange="handleCSV(event)">
+<div class="toast" id="toast"></div>
 
-  <div class="cards">
-    <div class="card">
-      <h3>✅ Running</h3>
-      <div style="font-size:0.82em; margin-top:6px;">
-        <div>🐾 OpenClaw gateway on Docker/AWS EC2</div>
-        <div>💬 Telegram integration (reactions, threading)</div>
-        <div>🌐 Chromium headless browser automation</div>
-        <div>📧 Gmail + Himalaya CLI (send/receive)</div>
-        <div>🐙 GitHub CLI (zakiassistant247)</div>
-        <div>🧠 Memory system + 30min heartbeat</div>
-        <div>📦 9 skills installed</div>
-      </div>
-    </div>
-    <div class="card">
-      <h3>🚫 Blocked</h3>
-      <div style="font-size:0.82em; margin-top:6px;">
-        <div>💸 Model cost — still on Opus ($$$)</div>
-        <div>📱 Flutter mobile testing — no emulator in Docker</div>
-        <div>🔍 Web search — no Brave API key</div>
-        <div>🗣️ TTS — no ElevenLabs API key</div>
-      </div>
-    </div>
-  </div>
-</div>
+<script>
+// Data
+const LS_LEADS='zaki_leads',LS_CAMP='zaki_campaigns';
+let leads=JSON.parse(localStorage.getItem(LS_LEADS)||'[]');
+let campaigns=JSON.parse(localStorage.getItem(LS_CAMP)||'[]');
+let editingLeadId=null,editingCampId=null;
 
-</div><!-- /container -->
+// Tabs
+document.querySelectorAll('.tabs button').forEach(b=>{
+b.onclick=()=>{
+document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+b.classList.add('active');
+document.getElementById(b.dataset.tab).classList.add('active');
+}
+});
 
-<footer>
-  Powered by <a href="https://github.com/openclaw/openclaw">OpenClaw</a> · Running on AWS EC2 · 
-  <a href="https://github.com/zakiassistant247">@zakiassistant247</a>
-</footer>
+// Save
+function saveLeads(){localStorage.setItem(LS_LEADS,JSON.stringify(leads));updateDashboard()}
+function saveCampaigns(){localStorage.setItem(LS_CAMP,JSON.stringify(campaigns));updateDashboard()}
 
+// Toast
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
+
+// Modal
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-bg').forEach(m=>{m.onclick=e=>{if(e.target===m)m.classList.remove('open')}});
+
+// LEADS
+function openLeadModal(id){
+editingLeadId=id||null;
+const m=document.getElementById('lead-modal');
+document.getElementById('lead-modal-title').textContent=id?'Edit Lead':'Add Lead';
+if(id){const l=leads.find(x=>x.id===id);if(l){document.getElementById('l-name').value=l.name;document.getElementById('l-company').value=l.company;document.getElementById('l-email').value=l.email||'';document.getElementById('l-status').value=l.status;document.getElementById('l-product').value=l.product;document.getElementById('l-value').value=l.value||'';document.getElementById('l-notes').value=l.notes||''}}
+else{['l-name','l-company','l-email','l-value','l-notes'].forEach(x=>document.getElementById(x).value='');document.getElementById('l-status').value='New';document.getElementById('l-product').value='SCS'}
+m.classList.add('open');document.getElementById('l-name').focus()
+}
+
+function saveLead(){
+const d={name:document.getElementById('l-name').value.trim(),company:document.getElementById('l-company').value.trim(),email:document.getElementById('l-email').value.trim(),status:document.getElementById('l-status').value,product:document.getElementById('l-product').value,value:parseFloat(document.getElementById('l-value').value)||0,notes:document.getElementById('l-notes').value.trim()};
+if(!d.name&&!d.company){toast('Need at least a name or company');return}
+if(editingLeadId){const i=leads.findIndex(x=>x.id===editingLeadId);if(i>=0){leads[i]={...leads[i],...d,updated:new Date().toISOString()}}}
+else{d.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);d.created=new Date().toISOString();d.updated=d.created;d.lastContact=new Date().toISOString().slice(0,10);leads.unshift(d)}
+saveLeads();renderLeads();closeModal('lead-modal');toast(editingLeadId?'Lead updated':'Lead added')
+}
+
+function deleteLead(id){if(confirm('Delete this lead?')){leads=leads.filter(x=>x.id!==id);saveLeads();renderLeads();toast('Lead deleted')}}
+
+function renderLeads(){
+const search=document.getElementById('f-search').value.toLowerCase();
+const status=document.getElementById('f-status').value;
+const product=document.getElementById('f-product').value;
+let filtered=leads.filter(l=>{
+if(status&&l.status!==status)return false;
+if(product&&l.product!==product)return false;
+if(search&&!(l.name+l.company+l.email+l.notes).toLowerCase().includes(search))return false;
+return true;
+});
+const tbody=document.getElementById('leads-tbody');
+const noLeads=document.getElementById('no-leads');
+if(filtered.length===0){tbody.innerHTML='';noLeads.style.display='block';return}
+noLeads.style.display='none';
+tbody.innerHTML=filtered.map(l=>`<tr>
+<td><strong>${esc(l.name)}</strong>${l.email?'<br><span style="font-size:.7rem;color:var(--text2)">'+esc(l.email)+'</span>':''}</td>
+<td>${esc(l.company)}</td>
+<td><span class="badge ${l.status.toLowerCase()}">${l.status}</span></td>
+<td>${l.product}</td>
+<td>£${(l.value||0).toLocaleString()}</td>
+<td style="font-size:.75rem">${l.lastContact||l.updated?.slice(0,10)||'—'}</td>
+<td style="max-width:150px;font-size:.75rem;color:var(--text2)">${esc(l.notes||'')}</td>
+<td style="white-space:nowrap"><button class="sm" onclick="openLeadModal('${l.id}')">✏️</button> <button class="sm danger" onclick="deleteLead('${l.id}')">🗑</button></td>
+</tr>`).join('');
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+// CSV
+function importCSV(){document.getElementById('csv-input').click()}
+function handleCSV(e){
+const f=e.target.files[0];if(!f)return;
+const r=new FileReader();r.onload=function(ev){
+const lines=ev.target.result.split('\n').filter(x=>x.trim());
+if(lines.length<2){toast('Empty CSV');return}
+const hdr=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/['"]/g,''));
+let count=0;
+for(let i=1;i<lines.length;i++){
+const vals=parseCSVLine(lines[i]);
+if(vals.length<2)continue;
+const row={};hdr.forEach((h,j)=>row[h]=vals[j]?.trim()||'');
+const lead={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+name:row.name||row.lead||row.contact||'',
+company:row.company||row.organisation||row.org||'',
+email:row.email||row.mail||'',
+status:row.status||'New',
+product:row.product||row.service||'SCS',
+value:parseFloat(row.value||row.price||row.amount)||0,
+notes:row.notes||row.note||'',
+lastContact:row['last contact']||row.date||new Date().toISOString().slice(0,10),
+created:new Date().toISOString(),updated:new Date().toISOString()};
+if(lead.name||lead.company){leads.unshift(lead);count++}
+}
+saveLeads();renderLeads();toast(`Imported ${count} leads`);
+};r.readAsText(f);e.target.value='';
+}
+
+function parseCSVLine(line){const r=[];let cur='',inQ=false;
+for(let i=0;i<line.length;i++){const c=line[i];
+if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++}else inQ=!inQ}
+else if(c===','&&!inQ){r.push(cur);cur=''}else cur+=c}
+r.push(cur);return r}
+
+function exportCSV(){
+const hdr='Name,Company,Email,Status,Product,Value,Last Contact,Notes';
+const rows=leads.map(l=>[l.name,l.company,l.email,l.status,l.product,l.value,l.lastContact||'',l.notes.replace(/"/g,'""')].map(v=>`"${v}"`).join(','));
+const blob=new Blob([hdr+'\n'+rows.join('\n')],{type:'text/csv'});
+const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zaki-leads.csv';a.click();toast('CSV exported')
+}
+
+// CAMPAIGNS
+function openCampaignModal(id){
+editingCampId=id||null;
+const m=document.getElementById('campaign-modal');
+document.getElementById('campaign-modal-title').textContent=id?'Edit Campaign':'Add Campaign';
+if(id){const c=campaigns.find(x=>x.id===id);if(c){document.getElementById('c-name').value=c.name;document.getElementById('c-product').value=c.product;document.getElementById('c-sent').value=c.sent;document.getElementById('c-opens').value=c.opens;document.getElementById('c-replies').value=c.replies;document.getElementById('c-meetings').value=c.meetings;document.getElementById('c-status').value=c.status}}
+else{['c-name'].forEach(x=>document.getElementById(x).value='');['c-sent','c-opens','c-replies','c-meetings'].forEach(x=>document.getElementById(x).value='0');document.getElementById('c-product').value='SCS';document.getElementById('c-status').value='Active'}
+m.classList.add('open');document.getElementById('c-name').focus()
+}
+
+function saveCampaign(){
+const d={name:document.getElementById('c-name').value.trim(),product:document.getElementById('c-product').value,sent:parseInt(document.getElementById('c-sent').value)||0,opens:parseInt(document.getElementById('c-opens').value)||0,replies:parseInt(document.getElementById('c-replies').value)||0,meetings:parseInt(document.getElementById('c-meetings').value)||0,status:document.getElementById('c-status').value};
+if(!d.name){toast('Campaign needs a name');return}
+if(editingCampId){const i=campaigns.findIndex(x=>x.id===editingCampId);if(i>=0)campaigns[i]={...campaigns[i],...d}}
+else{d.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);campaigns.unshift(d)}
+saveCampaigns();renderCampaigns();closeModal('campaign-modal');toast(editingCampId?'Campaign updated':'Campaign added')
+}
+
+function deleteCampaign(id){if(confirm('Delete campaign?')){campaigns=campaigns.filter(x=>x.id!==id);saveCampaigns();renderCampaigns();toast('Campaign deleted')}}
+
+function renderCampaigns(){
+const el=document.getElementById('campaigns-list');
+const no=document.getElementById('no-campaigns');
+if(!campaigns.length){el.innerHTML='';no.style.display='block';return}
+no.style.display='none';
+el.innerHTML=campaigns.map(c=>{
+const openRate=c.sent?Math.round(c.opens/c.sent*100):0;
+const replyRate=c.sent?Math.round(c.replies/c.sent*100):0;
+const statusColor=c.status==='Active'?'var(--green)':c.status==='Paused'?'var(--yellow)':'var(--text2)';
+return`<div class="campaign-card">
+<h3><span style="color:${statusColor}">●</span> ${esc(c.name)} <span style="font-size:.75rem;color:var(--text2);font-weight:400">${c.product}</span>
+<span style="margin-left:auto;display:flex;gap:.25rem"><button class="sm" onclick="openCampaignModal('${c.id}')">✏️</button><button class="sm danger" onclick="deleteCampaign('${c.id}')">🗑</button></span></h3>
+<div class="campaign-stats">
+<div class="campaign-stat"><div class="num">${c.sent}</div><div class="lbl">Sent</div></div>
+<div class="campaign-stat"><div class="num">${c.opens}</div><div class="lbl">Opens (${openRate}%)</div></div>
+<div class="campaign-stat"><div class="num">${c.replies}</div><div class="lbl">Replies (${replyRate}%)</div></div>
+<div class="campaign-stat"><div class="num">${c.meetings}</div><div class="lbl">Meetings</div></div>
+</div></div>`}).join('');
+}
+
+// DASHBOARD
+function updateDashboard(){
+const closed=leads.filter(l=>l.status==='Closed');
+const totalValue=leads.reduce((s,l)=>s+l.value,0);
+const closedValue=closed.reduce((s,l)=>s+l.value,0);
+const activeCamps=campaigns.filter(c=>c.status==='Active').length;
+document.getElementById('d-revenue').textContent='£'+closedValue.toLocaleString();
+document.getElementById('d-leads').textContent=leads.length;
+document.getElementById('d-leads-sub').textContent=leads.length?`${leads.filter(l=>l.status==='New').length} new, ${leads.filter(l=>l.status==='Meeting').length} in meetings`:'Add leads in CRM';
+document.getElementById('d-value').textContent='£'+totalValue.toLocaleString();
+document.getElementById('d-campaigns').textContent=activeCamps;
+document.getElementById('d-closed').textContent=closed.length;
+
+// Pipeline bars
+const statuses=['New','Contacted','Opened','Replied','Meeting','Closed'];
+const colors={'New':'var(--accent2)','Contacted':'var(--cyan)','Opened':'var(--yellow)','Replied':'var(--orange)','Meeting':'var(--pink)','Closed':'var(--green)'};
+const bars=document.getElementById('pipeline-bars');
+bars.innerHTML=statuses.map(s=>{
+const count=leads.filter(l=>l.status===s).length;
+return`<div style="flex:1;min-width:80px;background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:.75rem;text-align:center">
+<div style="font-size:1.5rem;font-weight:700;color:${colors[s]}">${count}</div>
+<div style="font-size:.6875rem;color:var(--text2);text-transform:uppercase">${s}</div></div>`}).join('');
+}
+
+// Copy template
+function copyTemplate(id){navigator.clipboard.writeText(document.getElementById(id).textContent);toast('Copied to clipboard')}
+
+// Init
+renderLeads();renderCampaigns();updateDashboard();
+
+// Seed default campaigns if empty
+if(!campaigns.length){
+campaigns=[
+{id:'scs1',name:'SCS Cold Outreach - Freight Forwarders',product:'SCS',sent:0,opens:0,replies:0,meetings:0,status:'Active'},
+{id:'dd1',name:'DocDrop Cold Outreach - Bookkeepers',product:'DocDrop',sent:0,opens:0,replies:0,meetings:0,status:'Active'}
+];
+saveCampaigns();renderCampaigns();updateDashboard();
+}
+</script>
 </body>
 </html>
