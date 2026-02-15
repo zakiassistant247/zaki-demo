@@ -101,6 +101,22 @@ tr:hover td{background:var(--surface2)}
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--green);color:#fff;padding:.75rem 1.25rem;border-radius:.5rem;font-size:.875rem;font-weight:500;z-index:200;opacity:0;transform:translateY(10px);transition:all .3s}
 .toast.show{opacity:1;transform:translateY(0)}
 
+/* Todo List */
+.todo-section{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;margin-bottom:2rem}
+.todo-section h2{font-size:1.125rem;font-weight:600;margin-bottom:1rem}
+.todo-group{margin-bottom:1.25rem}
+.todo-group:last-child{margin-bottom:0}
+.todo-group-title{font-size:.8125rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.375rem .75rem;border-radius:.375rem;margin-bottom:.5rem;display:inline-block}
+.todo-group-title.high{background:rgba(239,68,68,.15);color:var(--red)}
+.todo-group-title.week{background:rgba(234,179,8,.15);color:var(--yellow)}
+.todo-group-title.low{background:rgba(34,197,94,.15);color:var(--green)}
+.todo-item{display:flex;align-items:flex-start;gap:.625rem;padding:.375rem 0;font-size:.875rem}
+.todo-item input[type=checkbox]{width:1rem;height:1rem;margin-top:.2rem;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.todo-item label{cursor:pointer;flex:1}
+.todo-item.done label{text-decoration:line-through;color:var(--text2)}
+.todo-item a{color:var(--accent2)}
+.todo-progress{font-size:.75rem;color:var(--text2);margin-top:.75rem;text-align:right}
+
 /* Hide sections */
 .panel{display:none}.panel.active{display:block}
 @media(max-width:640px){.stats{grid-template-columns:1fr 1fr}.filters input,.filters select{min-width:100px;font-size:.75rem}table{font-size:.75rem}th,td{padding:.5rem}}
@@ -128,6 +144,12 @@ tr:hover td{background:var(--surface2)}
 <div class="stat"><div class="label">Pipeline Value</div><div class="value" id="d-value">£0</div><div class="sub">Total potential</div></div>
 <div class="stat"><div class="label">Active Campaigns</div><div class="value" id="d-campaigns">0</div><div class="sub">SCS + DocDrop</div></div>
 <div class="stat"><div class="label">Closed Deals</div><div class="value" id="d-closed">0</div><div class="sub">This month</div></div>
+</div>
+<div class="todo-section">
+<h2>📋 Todo List <span class="todo-progress" id="todo-progress"></span></h2>
+<div class="todo-group"><div class="todo-group-title high">🔴 High Priority</div><div id="todo-high"></div></div>
+<div class="todo-group"><div class="todo-group-title week">🟡 This Week</div><div id="todo-week"></div></div>
+<div class="todo-group"><div class="todo-group-title low">🟢 When You Have 10 Min</div><div id="todo-low"></div></div>
 </div>
 <div class="section">
 <h2 style="font-size:1rem;font-weight:600;margin-bottom:.75rem">Pipeline by Status</h2>
@@ -469,6 +491,45 @@ return`<div style="flex:1;min-width:80px;background:var(--surface);border:1px so
 <div style="font-size:1.5rem;font-weight:700;color:${colors[s]}">${count}</div>
 <div style="font-size:.6875rem;color:var(--text2);text-transform:uppercase">${s}</div></div>`}).join('');
 }
+
+// TODO LIST
+const TODO_ITEMS=[
+{id:'t1',group:'high',text:'Gemini API key → <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> (fixes memory search)'},
+{id:'t2',group:'high',text:'Record 2-min Loom demos for SCS + DocDrop'},
+{id:'t3',group:'high',text:'Send new email sequences to warm leads'},
+{id:'t4',group:'high',text:'Update OpenClaw Docker (security hardening)'},
+{id:'t5',group:'week',text:'Reddit signup → <a href="https://reddit.com/register" target="_blank">reddit.com/register</a>'},
+{id:'t6',group:'week',text:'Chrome Web Store $5 fee (Ramadan deadline Feb 28!)'},
+{id:'t7',group:'week',text:'NVIDIA API key → <a href="https://build.nvidia.com" target="_blank">build.nvidia.com</a>'},
+{id:'t8',group:'week',text:'Pick extension publisher name'},
+{id:'t9',group:'week',text:'DeepSeek API key → <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a>'},
+{id:'t10',group:'week',text:'Register residualrisk.io (~$33/yr)'},
+{id:'t11',group:'low',text:'Review CalVault P0 audit'},
+{id:'t12',group:'low',text:'Explore Claw Mart / ClawHub'},
+{id:'t13',group:'low',text:'Package lead gen tools as paid ClawHub skills'},
+{id:'t14',group:'low',text:'Get Supabase env vars'},
+{id:'t15',group:'low',text:'Approve weekly Sunday status cron'},
+];
+const LS_TODO='zaki_todos';
+function getTodoState(){return JSON.parse(localStorage.getItem(LS_TODO)||'{}')}
+function setTodoState(s){localStorage.setItem(LS_TODO,JSON.stringify(s))}
+function renderTodos(){
+const state=getTodoState();
+const groups={high:document.getElementById('todo-high'),week:document.getElementById('todo-week'),low:document.getElementById('todo-low')};
+Object.values(groups).forEach(g=>g.innerHTML='');
+let done=0;
+TODO_ITEMS.forEach(t=>{
+const checked=!!state[t.id];
+if(checked)done++;
+const div=document.createElement('div');
+div.className='todo-item'+(checked?' done':'');
+div.innerHTML=`<input type="checkbox" id="chk-${t.id}" ${checked?'checked':''}><label for="chk-${t.id}">${t.text}</label>`;
+div.querySelector('input').onchange=function(){const s=getTodoState();s[t.id]=this.checked;setTodoState(s);renderTodos()};
+groups[t.group].appendChild(div);
+});
+document.getElementById('todo-progress').textContent=done+'/'+TODO_ITEMS.length+' done';
+}
+renderTodos();
 
 // Copy template
 function copyTemplate(id){navigator.clipboard.writeText(document.getElementById(id).textContent);toast('Copied to clipboard')}
