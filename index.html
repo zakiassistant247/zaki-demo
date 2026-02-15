@@ -132,6 +132,7 @@ tr:hover td{background:var(--surface2)}
 <button data-tab="products">Products</button>
 <button data-tab="campaigns">Campaigns</button>
 <button data-tab="actions">Quick Actions</button>
+<button data-tab="ideas">💡 Idea Bank</button>
 </nav>
 </header>
 
@@ -310,6 +311,44 @@ Samed</pre></div>
 <input type="file" id="csv-input" accept=".csv" style="display:none" onchange="handleCSV(event)">
 <div class="toast" id="toast"></div>
 
+<!-- IDEA BANK -->
+<div id="ideas" class="panel">
+<div class="section">
+<div class="section-header"><h2>💡 Idea Bank</h2><button class="sm" onclick="addIdea()">+ Add Idea</button></div>
+
+<h3 style="color:var(--green);margin-bottom:.75rem;font-size:.875rem">🟢 Revenue Ideas</h3>
+<div class="table-wrap"><table>
+<tr><th>Idea</th><th>Revenue</th><th>Effort</th><th>Status</th><th>Notes</th></tr>
+<tr><td><strong>CalVault Migration Service</strong></td><td>£2-5K/client</td><td style="color:var(--green)">Low</td><td><span style="color:var(--green)">🟢 Go</span></td><td>Sell the migration, not the software. "Move off GAGEtrak in 48h." Software free 3mo.</td></tr>
+<tr><td><strong>Compliance Micro-Consulting</strong></td><td>£500-1K/session</td><td style="color:var(--green)">Low</td><td><span style="color:var(--green)">🟢 Go</span></td><td>2-hour audit prep sessions via Zoom. CalVault = upsell.</td></tr>
+<tr><td><strong>DocDrop: Free Audit Pivot</strong></td><td>£1.5-3K/client</td><td style="color:var(--green)">Low</td><td><span style="color:var(--green)">🟢 Go</span></td><td>60% opens, 0% replies. New angle: personalised free audit → give value first.</td></tr>
+<tr><td><strong>SCS: Managed Service First</strong></td><td>£X/shipment</td><td style="color:var(--yellow)">Med</td><td><span style="color:var(--yellow)">🟡 Explore</span></td><td>Don't build. Offer customs paperwork as service. VA + existing tools. Validate, then automate.</td></tr>
+<tr><td><strong>OpenClaw Skills as Products</strong></td><td>$5-50/skill</td><td style="color:var(--yellow)">Med</td><td><span style="color:var(--yellow)">🟡 Explore</span></td><td>ClawHub 15K daily installs. Zero freight/bookkeeper skills. We know both domains.</td></tr>
+<tr><td><strong>Template/Spreadsheet Products</strong></td><td>£20-50 each</td><td style="color:var(--green)">Low</td><td><span style="color:var(--yellow)">🟡 Explore</span></td><td>CalVault lead magnets → sell on Gumroad. Passive. Needs Samed's Gumroad signup.</td></tr>
+<tr><td><strong>Residual Risk Paid Community</strong></td><td>£29/mo/member</td><td style="color:var(--yellow)">Med</td><td><span style="color:var(--cyan)">🔵 Park</span></td><td>Discord for compliance pros. Needs audience first → launch newsletter.</td></tr>
+<tr><td><strong>Chrome Extensions Bundle</strong></td><td>$2-5/mo</td><td style="color:var(--green)">Low</td><td><span style="color:var(--yellow)">🟡 Explore</span></td><td>"Muslim Productivity Suite" — bundle 5 extensions. Product Hunt + Islamic tech blogs.</td></tr>
+</table></div>
+
+<h3 style="color:var(--cyan);margin:1.5rem 0 .75rem;font-size:.875rem">📈 Growth & Marketing Ideas</h3>
+<div class="table-wrap"><table>
+<tr><th>Idea</th><th>Impact</th><th>Effort</th><th>Status</th><th>Notes</th></tr>
+<tr><td><strong>Target Failed Audits</strong></td><td style="color:var(--green)">High</td><td style="color:var(--yellow)">Med</td><td><span style="color:var(--green)">🟢 Go</span></td><td>Find companies that just failed ISO audits (public records). Perfect timing for CalVault.</td></tr>
+<tr><td><strong>Cal Lab Partnerships</strong></td><td style="color:var(--green)">High</td><td style="color:var(--yellow)">Med</td><td><span style="color:var(--yellow)">🟡 Explore</span></td><td>Transcat, Trescal, Simco calibrate instruments but don't sell tracking. CalVault as their rec.</td></tr>
+<tr><td><strong>Industry Forum Seeding</strong></td><td style="color:var(--yellow)">Med</td><td style="color:var(--green)">Low</td><td><span style="color:var(--yellow)">🟡 Explore</span></td><td>Elsmar Cove, Reddit r/manufacturing. Answer questions, build authority. Needs Reddit account.</td></tr>
+<tr><td><strong>Resend Cold Outreach</strong></td><td style="color:var(--green)">High</td><td style="color:var(--green)">Low</td><td><span style="color:var(--cyan)">🔵 Park</span></td><td>CalVault uses Resend. Automate sequences against T1 leads. 4-5 weeks out (domain warming).</td></tr>
+</table></div>
+
+<h3 style="color:var(--orange);margin:1.5rem 0 .75rem;font-size:.875rem">💰 Cost Optimization</h3>
+<div class="table-wrap"><table>
+<tr><th>Idea</th><th>Savings</th><th>Effort</th><th>Status</th><th>Notes</th></tr>
+<tr><td><strong>Multi-Model Routing</strong></td><td>50-80%</td><td style="color:var(--green)">2 min</td><td><span style="color:var(--green)">🟢 Go</span></td><td>Heartbeats → Gemini Flash, sub-agents → DeepSeek, main → Opus. Needs 1 API key.</td></tr>
+<tr><td><strong>OpenRouter Auto-Router</strong></td><td>30-50%</td><td style="color:var(--green)">5 min</td><td><span style="color:var(--yellow)">🟡 Explore</span></td><td>One key, auto-routes to cheapest model per query. Crypto-friendly.</td></tr>
+</table></div>
+
+<p style="color:var(--text2);font-size:.75rem;margin-top:1.5rem;text-align:center">Last updated: 2026-02-15 • Ideas are evaluated against: revenue potential, time-to-money, Samed's effort required, Zaki's ability to execute</p>
+</div>
+</div>
+
 <script>
 // Data
 const LS_LEADS='zaki_leads',LS_CAMP='zaki_campaigns';
@@ -388,6 +427,8 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 
 // CSV
 function importCSV(){document.getElementById('csv-input').click()}
+function addIdea(){const n=prompt('Idea name:');if(!n)return;const r=prompt('Revenue potential:');const s=prompt('Status (go/explore/park):','explore');const note=prompt('Notes:');const colors={go:'var(--green)',explore:'var(--yellow)',park:'var(--cyan)'};const labels={go:'🟢 Go',explore:'🟡 Explore',park:'🔵 Park'};const tbl=document.querySelector('#ideas table');const tr=document.createElement('tr');tr.innerHTML=`<td><strong>${n}</strong></td><td>${r||'TBD'}</td><td>TBD</td><td><span style="color:${colors[s]||colors.explore}">${labels[s]||labels.explore}</span></td><td>${note||''}</td>`;tbl.appendChild(tr);toast('Idea added! (session only — add to PROJECT-COMMAND-CENTER.md to persist)');}
+
 function handleCSV(e){
 const f=e.target.files[0];if(!f)return;
 const r=new FileReader();r.onload=function(ev){
